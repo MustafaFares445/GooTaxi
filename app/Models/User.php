@@ -5,35 +5,39 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\FilterQueries\UserFilterQuery;
-use Carbon\CarbonInterface;
 use App\Traits\HasMediaConversions;
+use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 
 /**
  * @property-read int $id
  * @property-read string $name
  * @property-read string $email
+ * @property string|null $phone_number
+ * @property bool $is_admin
  * @property-read CarbonInterface|null $email_verified_at
  * @property-read string $password
  * @property-read string|null $remember_token
  * @property-read CarbonInterface $created_at
  * @property-read CarbonInterface $updated_at
  */
-final class User extends Authenticatable implements MustVerifyEmail , HasMedia
+final class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable , HasMediaConversions , Searchable , HasApiTokens;
+    use HasApiTokens, HasFactory, HasMediaConversions, Notifiable, UserFilterQuery;
 
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
+        'is_admin',
         'email_verified_at',
         'password',
     ];
@@ -55,6 +59,8 @@ final class User extends Authenticatable implements MustVerifyEmail , HasMedia
             'id' => 'integer',
             'name' => 'string',
             'email' => 'string',
+            'phone_number' => 'string',
+            'is_admin' => 'boolean',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'remember_token' => 'string',
@@ -63,18 +69,8 @@ final class User extends Authenticatable implements MustVerifyEmail , HasMedia
         ];
     }
 
-    /**
-     * Get the indexable data array for the model.
-     *
-     * @return array<string, mixed>
-     */
-    public function toSearchableArray(): array
+    public function bookings(): HasMany
     {
-        return array_merge($this->toArray(),[
-            'id' => (string) $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'created_at' => $this->created_at->timestamp,
-        ]);
+        return $this->hasMany(Booking::class);
     }
 }

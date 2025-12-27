@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services;
+
+use App\Actions\CalculateBookingPriceAction;
+use App\Actions\GetOfferFromCouponCode;
+use App\Data\BookingData;
+use App\Models\Booking;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Throwable;
+
+final class BookingService
+{
+    /**
+     * Validate booking data.
+     * Store to DB if there are no errors.
+     *
+     * @throws Throwable
+     */
+    public function store(BookingData $data, ?string $couponsCode = null): Booking
+    {
+        return DB::transaction(function () use ($data, $couponsCode) {
+            $data->offerId = app(GetOfferFromCouponCode::class)->handle($couponsCode, $data->offerId);
+
+            $data->finalPrice = $this->calculateFinalPrice($data);
+
+            return Booking::create($data->onlyModelAttributes());
+        });
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function calculateFinalPrice(BookingData $data): float
+    {
+        return $data->finalPrice ?? app(CalculateBookingPriceAction::class)->handle($data)->finalPrice;
+    }
+}

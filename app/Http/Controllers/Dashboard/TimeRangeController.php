@@ -1,0 +1,68 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Data\TimeRangeData;
+use App\Http\Requests\TimeRangeStoreRequest;
+use App\Http\Requests\TimeRangeUpdateRequest;
+use App\Http\Resources\TimeRangeResource;
+use App\Models\TimeRange;
+use App\Services\TimeRangeService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
+
+final readonly class TimeRangeController
+{
+    public function __construct(private TimeRangeService $timeRangeService) {}
+
+    public function index(): AnonymousResourceCollection
+    {
+        $timeRanges = TimeRange::all();
+
+        return TimeRangeResource::collection($timeRanges)
+            ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function store(TimeRangeStoreRequest $request): JsonResponse
+    {
+        $timeRange = $this->timeRangeService->store(TimeRangeData::from($request->validated()));
+
+        return TimeRangeResource::make($timeRange)
+            ->additional(['message' => ResponseMessages::CREATED->message()])
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
+    }
+
+    public function show(TimeRange $timeRange): TimeRangeResource
+    {
+        return TimeRangeResource::make($timeRange)
+            ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function update(TimeRangeUpdateRequest $request, TimeRange $timeRange): TimeRangeResource
+    {
+        $updatedTimeRange = $this->timeRangeService->update(TimeRangeData::from($request->validated()), $timeRange);
+
+        return TimeRangeResource::make($updatedTimeRange)
+            ->additional(['message' => ResponseMessages::UPDATED->message()]);
+    }
+
+    public function destroy(TimeRange $timeRange): TimeRangeResource
+    {
+        $timeRange->delete();
+
+        return TimeRangeResource::make($timeRange)
+            ->additional(['message' => ResponseMessages::DELETED->message()]);
+    }
+}
