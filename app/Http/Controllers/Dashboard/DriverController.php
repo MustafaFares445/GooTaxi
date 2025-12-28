@@ -21,6 +21,9 @@ final class DriverController
 {
     public function __construct(private DriverService $driverService) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function index(DriverFilterRequest $request): AnonymousResourceCollection
     {
         $drivers = Driver::getQuery()
@@ -31,6 +34,8 @@ final class DriverController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function store(DriverStoreRequest $request): JsonResponse
@@ -43,6 +48,9 @@ final class DriverController
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function show(Driver $driver): DriverResource
     {
 
@@ -51,6 +59,8 @@ final class DriverController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function update(DriverUpdateRequest $request, Driver $driver): DriverResource
@@ -61,6 +71,9 @@ final class DriverController
             ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function destroy(Driver $driver): DriverResource
     {
         $driver->delete();

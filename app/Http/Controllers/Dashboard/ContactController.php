@@ -1,25 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Dashboard;
 
-use App\Models\Contact;
-use App\Http\Requests\ContactRequest;
 use App\Http\Resources\ContactResource;
+use App\Models\Contact;
 use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
-class ContactController
+final class ContactController
 {
+    /**
+     * @tags Dashboard
+     */
     public function index(): ContactResource
     {
         return ContactResource::make(Contact::query()->first())
-          ->additional(['message' => __(ResponseMessages::RETRIEVED->message())]);;
+            ->additional(['message' => __(ResponseMessages::RETRIEVED->message())]);
     }
 
-    public function update(ContactRequest $request, Contact $contact): ContactResource
+    /**
+     * @tags Dashboard
+     */
+    public function show(Contact $contact): ContactResource
     {
-        $contact->update($request->validated());
-
         return ContactResource::make($contact)
-              ->additional(['message' => __(ResponseMessages::UPDATED->message())]);;
+            ->additional(['message' => __(ResponseMessages::RETRIEVED->message())]);
     }
 }

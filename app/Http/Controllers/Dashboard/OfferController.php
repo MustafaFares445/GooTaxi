@@ -21,6 +21,9 @@ final class OfferController
 {
     public function __construct(private OfferService $offerService) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function index(OfferFilterRequest $request): AnonymousResourceCollection
     {
         $offers = Offer::getQuery()
@@ -31,6 +34,8 @@ final class OfferController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function store(OfferStoreRequest $request): JsonResponse
@@ -43,6 +48,9 @@ final class OfferController
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function show(Offer $offer): OfferResource
     {
 
@@ -51,6 +59,8 @@ final class OfferController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function update(OfferUpdateRequest $request, Offer $offer): OfferResource
@@ -61,6 +71,9 @@ final class OfferController
             ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function destroy(Offer $offer): OfferResource
     {
         $offer->delete();

@@ -12,6 +12,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 final readonly class ReturnNearestAdditionalPriceController
 {
+    /**
+     * @tags API
+     */
     public function __invoke(ReturnNearestAdditionalPriceRequest $request, ReturnNearestAdditionalPriceAction $action): JsonResource|JsonResponse
     {
         $additionalPrice = $action->handle((float) $request->latitude, (float) $request->longitude);

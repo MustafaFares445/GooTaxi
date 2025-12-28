@@ -24,6 +24,7 @@ final class DatabaseSeeder extends Seeder
         $admin = User::factory()->admin()->create([
             'name' => 'Admin User',
             'email' => 'admin@goo-taxi.com',
+            'password' => Hash::make('secret'),
         ]);
 
         // Create regular users

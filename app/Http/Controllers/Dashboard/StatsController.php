@@ -12,6 +12,9 @@ final class StatsController
 {
     public function __construct(private StatsAction $statsAction) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function __invoke(): JsonResponse
     {
         $stats = $this->statsAction->handle();

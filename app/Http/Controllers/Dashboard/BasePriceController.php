@@ -16,6 +16,9 @@ final readonly class BasePriceController
 {
     public function __construct(private BasePriceService $basePriceService) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function index(): BasePriceResource
     {
         $basePrices = BasePrice::query()->first();
@@ -25,6 +28,8 @@ final readonly class BasePriceController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function update(BasePriceUpdateRequest $request, BasePrice $basePrice): BasePriceResource

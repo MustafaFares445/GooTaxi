@@ -14,6 +14,9 @@ final class CheckOfferController
 {
     private function __construct(private GetOfferFromCouponCode $getOfferFromCouponCode) {}
 
+    /**
+     * @tags API
+     */
     public function __invoke(Request $request)
     {
         $request->validate([

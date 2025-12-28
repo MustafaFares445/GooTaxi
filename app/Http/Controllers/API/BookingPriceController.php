@@ -16,6 +16,9 @@ final readonly class BookingPriceController
 {
     public function __construct(private CalculateBookingPriceAction $calculateBookingPriceAction) {}
 
+    /**
+     * @tags API
+     */
     public function __invoke(BookingPriceRequest $request)
     {
         $offerId = Offer::query()

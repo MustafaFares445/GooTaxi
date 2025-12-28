@@ -21,6 +21,9 @@ final readonly class BookingController
 {
     public function __construct(private BookingService $bookingService) {}
 
+    /**
+     * @tags API
+     */
     public function index(BookingFilterRequest $request): AnonymousResourceCollection
     {
         $bookings = Booking::getQuery()
@@ -32,6 +35,8 @@ final readonly class BookingController
     }
 
     /**
+     * @tags API
+     *
      * @throws Throwable
      */
     public function store(UserBookingRequest $request): JsonResponse
@@ -47,6 +52,9 @@ final readonly class BookingController
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @tags API
+     */
     public function show(Booking $booking): BookingResource
     {
         return BookingResource::make($booking->load('driver', 'offer'))

@@ -21,6 +21,9 @@ final readonly class AdditionalPriceController
 {
     public function __construct(private AdditionalPriceService $additionalPriceService) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function index(AdditionalPriceFilterRequest $request): AnonymousResourceCollection
     {
         $additionalPrices = AdditionalPrice::getQuery()
@@ -31,6 +34,8 @@ final readonly class AdditionalPriceController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function store(AdditionalPriceStoreRequest $request): JsonResponse
@@ -43,6 +48,9 @@ final readonly class AdditionalPriceController
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function show(AdditionalPrice $additionalPrice): AdditionalPriceResource
     {
         return AdditionalPriceResource::make($additionalPrice)
@@ -50,6 +58,8 @@ final readonly class AdditionalPriceController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function update(AdditionalPriceUpdateRequest $request, AdditionalPrice $additionalPrice): AdditionalPriceResource
@@ -60,6 +70,9 @@ final readonly class AdditionalPriceController
             ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function destroy(AdditionalPrice $additionalPrice): AdditionalPriceResource
     {
         $additionalPrice->delete();

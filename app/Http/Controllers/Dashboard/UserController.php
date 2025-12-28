@@ -21,6 +21,9 @@ final readonly class UserController
 {
     public function __construct(private UserService $userService) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function index(UserFilterRequest $request): AnonymousResourceCollection
     {
         $users = User::getQuery()
@@ -31,6 +34,8 @@ final readonly class UserController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function store(UserStoreRequest $request): JsonResponse
@@ -43,6 +48,9 @@ final readonly class UserController
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function show(User $user): UserResource
     {
         return UserResource::make($user)
@@ -50,6 +58,8 @@ final readonly class UserController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function update(UserUpdateRequest $request, User $user): UserResource
@@ -60,6 +70,9 @@ final readonly class UserController
             ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function destroy(User $user): UserResource
     {
         $user->delete();

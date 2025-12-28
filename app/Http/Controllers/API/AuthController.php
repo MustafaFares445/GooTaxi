@@ -21,6 +21,9 @@ final class AuthController
 
     public function __construct(protected AuthService $authService) {}
 
+    /**
+     * @tags API
+     */
     public function login(LoginRequest $request): AuthResource
     {
         $authResult = $this->authService->login(LoginData::from($request->validated()));
@@ -29,6 +32,9 @@ final class AuthController
             ->additional(['message' => __('Log in successfully')]);
     }
 
+    /**
+     * @tags API
+     */
     public function logout(Request $request): JsonResponse
     {
         $this->authService->logout($request->user()?->currentAccessToken());
@@ -36,6 +42,9 @@ final class AuthController
         return $this->successMessage(message: __('Logged out successfully'));
     }
 
+    /**
+     * @tags API
+     */
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $responseData = $this->authService->sendResetLink($request->validated('email'));
@@ -43,6 +52,9 @@ final class AuthController
         return $this->successMessage(message: __($responseData['status']), status: $responseData['httpStatus']);
     }
 
+    /**
+     * @tags API
+     */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $responseData = $this->authService->resetPassword(ResetPasswordData::from($request->validated()));

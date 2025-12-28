@@ -20,6 +20,9 @@ final readonly class TimeRangeController
 {
     public function __construct(private TimeRangeService $timeRangeService) {}
 
+    /**
+     * @tags Dashboard
+     */
     public function index(): AnonymousResourceCollection
     {
         $timeRanges = TimeRange::all();
@@ -29,6 +32,8 @@ final readonly class TimeRangeController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function store(TimeRangeStoreRequest $request): JsonResponse
@@ -41,6 +46,9 @@ final readonly class TimeRangeController
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function show(TimeRange $timeRange): TimeRangeResource
     {
         return TimeRangeResource::make($timeRange)
@@ -48,6 +56,8 @@ final readonly class TimeRangeController
     }
 
     /**
+     * @tags Dashboard
+     *
      * @throws Throwable
      */
     public function update(TimeRangeUpdateRequest $request, TimeRange $timeRange): TimeRangeResource
@@ -58,6 +68,9 @@ final readonly class TimeRangeController
             ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function destroy(TimeRange $timeRange): TimeRangeResource
     {
         $timeRange->delete();
