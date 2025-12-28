@@ -28,4 +28,5 @@ Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
 
     Route::apiResource('/time_ranges', App\Http\Controllers\Dashboard\TimeRangeController::class);
     Route::get('/stats', App\Http\Controllers\Dashboard\StatsController::class);
+    Route::get('feedbacks', [App\Http\Controllers\Dashboard\FeedbackController::class, 'index']);
 });
