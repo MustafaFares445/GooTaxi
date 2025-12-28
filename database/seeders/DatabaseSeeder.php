@@ -15,6 +15,7 @@ use App\Models\Offer;
 use App\Models\TimeRange;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 final class DatabaseSeeder extends Seeder
 {
