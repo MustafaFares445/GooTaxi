@@ -21,4 +21,4 @@ Route::get('/booking/price', BookingPriceController::class);
 Route::apiResource('/booking', BookingController::class)->only(['index', 'show', 'store']);
 Route::post('/nearest-additional-price', ReturnNearestAdditionalPriceController::class)->middleware('auth:sanctum');
 Route::post('/check-offer', CheckOfferController::class)->middleware('auth:sanctum');
-Route::post('/feedback', FeedbackController::class)->middleware('auth:sanctum');
+Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('auth:sanctum');
