@@ -40,7 +40,7 @@ final class UserUpdateRequest extends FormRequest
             'isAdmin' => [
                 '0' => 'sometimes',
                 '1' => 'bail',
-                '2' => 'integer',
+                '2' => 'boolean',
                 '3' => 'min:-2147483648',
                 '4' => 'max:255',
             ],

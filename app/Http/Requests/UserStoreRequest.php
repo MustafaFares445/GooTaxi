@@ -36,7 +36,7 @@ final class UserStoreRequest extends FormRequest
             ],
             'isAdmin' => [
                 '0' => 'bail',
-                '1' => 'integer',
+                '1' => 'boolean',
                 '2' => 'min:-2147483648',
                 '3' => 'max:255',
             ],

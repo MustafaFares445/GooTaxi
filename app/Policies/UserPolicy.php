@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\User;
 use Mrmarchone\LaravelAutoCrud\Traits\AuthorizesByPermissionGroup;
 
 final class UserPolicy
@@ -17,7 +16,7 @@ final class UserPolicy
         return $this->authorizeAction($user, 'view');
     }
 
-    public function view(User $user, User $user): bool
+    public function view(User $user, User $targetUser): bool
     {
         return $this->authorizeAction($user, 'view');
     }
@@ -27,12 +26,12 @@ final class UserPolicy
         return $this->authorizeAction($user, 'create');
     }
 
-    public function update(User $user, User $user): bool
+    public function update(User $user, User $targetUser): bool
     {
         return $this->authorizeAction($user, 'update');
     }
 
-    public function delete(User $user, User $user): bool
+    public function delete(User $user, User $targetUser): bool
     {
         return $this->authorizeAction($user, 'delete');
     }
