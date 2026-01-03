@@ -37,13 +37,6 @@ final class UserUpdateRequest extends FormRequest
                 '3' => 'string',
                 '4' => 'max:255',
             ],
-            'isAdmin' => [
-                '0' => 'sometimes',
-                '1' => 'bail',
-                '2' => 'boolean',
-                '3' => 'min:-2147483648',
-                '4' => 'max:255',
-            ],
             'password' => [
                 '0' => 'sometimes',
                 '1' => 'bail',

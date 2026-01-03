@@ -19,10 +19,10 @@ final class BasePriceData extends Data
 
     public function __construct(
         #[Numeric]
-        public int $pricePerKm,
+        public ?int $pricePerKm = null,
         #[Numeric]
-        public int $vanPricePercentage,
+        public ?int $vanPricePercentage = null,
         #[Exists('time_ranges', 'id')]
-        public ?int $basePriceId
+        public ?int $basePriceId = null
     ) {}
 }

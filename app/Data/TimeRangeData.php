@@ -19,10 +19,10 @@ final class TimeRangeData extends Data
 
     public function __construct(
         #[Json]
-        public ?array $days,
-        public string $fromTime,
-        public string $toTime,
+        public ?array $days = null,
+        public ?string $fromTime = null,
+        public ?string $toTime = null,
         #[Numeric]
-        public int $pricePercentage
+        public ?int $pricePercentage = null
     ) {}
 }

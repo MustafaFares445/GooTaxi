@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Data;
 
 use App\Models\Booking;
-use Illuminate\Support\Optional;
 use Mrmarchone\LaravelAutoCrud\Traits\HasModelAttributes;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\Max;
@@ -20,30 +19,30 @@ final class BookingData extends Data
     protected static string $model = Booking::class;
 
     public function __construct(
-        public int $userId,
-        public ?int $driverId,
+        public ?int $userId = null,
+        public ?int $driverId = null,
         #[Max(255)]
-        public string $fromLocation,
+        public ?string $fromLocation = null,
         #[Max(255)]
-        public string $toLocation,
+        public ?string $toLocation = null,
         #[Date]
-        public string $date,
-        public string $time,
-        public float $distance,
-        public float|Optional $goingDistance,
-        public float $returnDistance,
-        public float $startingLat,
-        public float $startingLng,
-        public float $endingLat,
-        public float $endingLng,
-        public int $passengers,
-        public bool $extraLargeBags,
+        public ?string $date = null,
+        public ?string $time = null,
+        public ?float $distance = null,
+        public ?float $goingDistance = null,
+        public ?float $returnDistance = null,
+        public ?float $startingLat = null,
+        public ?float $startingLng = null,
+        public ?float $endingLat = null,
+        public ?float $endingLng = null,
+        public ?int $passengers = null,
+        public ?bool $extraLargeBags = null,
         #[Numeric]
-        public ?float $finalPrice,
+        public ?float $finalPrice = null,
         #[Max(255)]
-        public string $status,
-        public ?int $offerId,
-        public ?string $notes,
-        public bool $isCompleted = true
+        public ?string $status = null,
+        public ?int $offerId = null,
+        public ?string $notes = null,
+        public ?bool $isCompleted = null
     ) {}
 }

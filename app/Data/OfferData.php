@@ -22,18 +22,18 @@ final class OfferData extends Data
 
     public function __construct(
         #[Max(255), Unique('offers', 'coupon_code')]
-        public string $couponCode,
+        public ?string $couponCode = null,
         #[Numeric]
-        public int $discountRate,
-        public int $numberOfTimesUsed,
-        public int $uses,
+        public ?int $discountRate = null,
+        public ?int $numberOfTimesUsed = null,
+        public ?int $uses = null,
         #[Max(255)]
-        public string $status,
+        public ?string $status = null,
         #[Date]
-        public string $startDate,
+        public ?string $startDate = null,
         #[Date]
-        public string $endDate,
+        public ?string $endDate = null,
         #[Exists('bookings', 'id')]
-        public ?int $offerId
+        public ?int $offerId = null
     ) {}
 }

@@ -32,6 +32,21 @@ final class BookingService
     }
 
     /**
+     * Update booking data.
+     * Store to DB if there are no errors.
+     *
+     * @throws Throwable
+     */
+    public function update(BookingData $data, Booking $booking): Booking
+    {
+        return DB::transaction(function () use ($data, $booking) {
+            tap($booking)->update($data->onlyModelAttributes());
+
+            return $booking;
+        });
+    }
+
+    /**
      * @throws Exception
      */
     private function calculateFinalPrice(BookingData $data): float

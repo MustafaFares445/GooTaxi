@@ -16,11 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read int $id
  * @property int $user_id
  * @property int|null $driver_id
- * @property string $from_location
- * @property string $to_location
+ * @property string|null $from_location
+ * @property string|null $to_location
  * @property CarbonInterface $date
  * @property string $time
- * @property float $distance
+ * @property float|null $distance
+ * @property float|null $going_distance
+ * @property float|null $return_distance
  * @property int $passengers
  * @property bool $extra_large_bags
  * @property float $final_price
@@ -70,6 +72,8 @@ final class Booking extends Model
             'date' => 'date',
             'time' => 'string',
             'distance' => 'decimal:2',
+            'going_distance' => 'decimal:2',
+            'return_distance' => 'decimal:2',
             'passengers' => 'integer',
             'extra_large_bags' => 'boolean',
             'final_price' => 'decimal:2',

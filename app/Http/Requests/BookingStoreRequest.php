@@ -40,13 +40,15 @@ final class BookingStoreRequest extends FormRequest
             ],
             'fromLocation' => [
                 '0' => 'bail',
-                '1' => 'string',
-                '2' => 'max:255',
+                '1' => 'nullable',
+                '2' => 'string',
+                '3' => 'max:255',
             ],
             'toLocation' => [
                 '0' => 'bail',
-                '1' => 'string',
-                '2' => 'max:255',
+                '1' => 'nullable',
+                '2' => 'string',
+                '3' => 'max:255',
             ],
             'date' => [
                 '0' => 'bail',
@@ -59,18 +61,21 @@ final class BookingStoreRequest extends FormRequest
             ],
             'distance' => [
                 '0' => 'bail',
-                '1' => 'numeric',
-                '2' => 'between:-999999999.99,999999999.99',
+                '1' => 'nullable',
+                '2' => 'numeric',
+                '3' => 'between:-999999999.99,999999999.99',
             ],
             'goingDistance' => [
                 '0' => 'bail',
-                '1' => 'numeric',
-                '2' => 'between:-999999999.99,999999999.99',
+                '1' => 'nullable',
+                '2' => 'numeric',
+                '3' => 'between:-999999999.99,999999999.99',
             ],
             'returnDistance' => [
                 '0' => 'bail',
-                '1' => 'numeric',
-                '2' => 'between:-999999999.99,999999999.99',
+                '1' => 'nullable',
+                '2' => 'numeric',
+                '3' => 'between:-999999999.99,999999999.99',
             ],
             'startingLat' => [
                 '0' => 'bail',

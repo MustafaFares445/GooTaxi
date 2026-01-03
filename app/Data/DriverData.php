@@ -19,8 +19,8 @@ final class DriverData extends Data
 
     public function __construct(
         #[Max(255)]
-        public string $name,
+        public ?string $name = null,
         #[Exists('bookings', 'id')]
-        public ?int $driverId
+        public ?int $driverId = null
     ) {}
 }

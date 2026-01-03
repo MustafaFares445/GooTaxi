@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Data\BookingData;
 use App\Http\Requests\BookingFilterRequest;
 use App\Http\Requests\BookingStoreRequest;
+use App\Http\Requests\BookingUpdateRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Services\BookingService;
@@ -46,6 +47,19 @@ final readonly class BookingController
             ->additional(['message' => ResponseMessages::CREATED->message()])
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
+    }
+
+    /**
+     * @tags Dashboard
+     *
+     * @throws Throwable
+     */
+    public function update(BookingUpdateRequest $request, Booking $booking): BookingResource
+    {
+        $updatedBooking = $this->bookingService->update(BookingData::from($request->validated()), $booking);
+
+        return BookingResource::make($booking->load('user', 'driver', 'offer'))
+            ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 
     /**
