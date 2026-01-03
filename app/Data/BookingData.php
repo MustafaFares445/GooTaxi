@@ -23,8 +23,7 @@ final class BookingData extends Data
         public ?int $driverId = null,
         #[Max(255)]
         public ?string $fromLocation = null,
-        #[Max(255)]
-        public ?string $toLocation = null,
+        public ?array $toLocation = null,
         #[Date]
         public ?string $date = null,
         public ?string $time = null,

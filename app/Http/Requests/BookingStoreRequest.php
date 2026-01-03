@@ -47,8 +47,7 @@ final class BookingStoreRequest extends FormRequest
             'toLocation' => [
                 '0' => 'bail',
                 '1' => 'nullable',
-                '2' => 'string',
-                '3' => 'max:255',
+                '2' => 'array',
             ],
             'date' => [
                 '0' => 'bail',

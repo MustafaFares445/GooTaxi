@@ -20,7 +20,7 @@ final class BookingFilterRequest extends FormRequest
             'search' => 'sometimes|string|max:255',
             'filter.driverId' => 'sometimes|string|max:255',
             'filter.fromLocation' => 'sometimes|string|max:255',
-            'filter.toLocation' => 'sometimes|string|max:255',
+            'filter.toLocation' => 'sometimes|array',
             'filter.date' => 'sometimes|date',
             'filter.time' => 'sometimes|string|max:255',
             'filter.distance' => 'sometimes|string|max:255',

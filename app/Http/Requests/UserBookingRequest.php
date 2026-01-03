@@ -46,8 +46,7 @@ final class UserBookingRequest extends FormRequest
             ],
             'toLocation' => [
                 '0' => 'bail',
-                '1' => 'string',
-                '2' => 'max:255',
+                '1' => 'array',
             ],
             'date' => [
                 '0' => 'bail',

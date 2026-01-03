@@ -50,8 +50,7 @@ final class BookingUpdateRequest extends FormRequest
             'toLocation' => [
                 '0' => 'sometimes',
                 '1' => 'bail',
-                '2' => 'string',
-                '3' => 'max:255',
+                '2' => 'array',
             ],
             'date' => [
                 '0' => 'sometimes',

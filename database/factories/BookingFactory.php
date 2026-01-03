@@ -32,7 +32,7 @@ final class BookingFactory extends Factory
             'user_id' => User::factory(),
             'driver_id' => null,
             'from_location' => fake()->randomElement($locations),
-            'to_location' => fake()->randomElement($locations),
+            'to_location' => [fake()->randomElement($locations), fake()->randomElement($locations)],
             'date' => fake()->dateTimeBetween('now', '+30 days')->format('Y-m-d'),
             'time' => fake()->time('H:i'),
             'distance' => fake()->randomFloat(2, 5, 150),

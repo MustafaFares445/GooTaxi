@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property int|null $driver_id
  * @property string|null $from_location
- * @property string|null $to_location
+ * @property array|null $to_location
  * @property CarbonInterface $date
  * @property string $time
  * @property float|null $distance
@@ -68,7 +68,7 @@ final class Booking extends Model
             'user_id' => 'integer',
             'driver_id' => 'integer',
             'from_location' => 'string',
-            'to_location' => 'string',
+            'to_location' => 'array',
             'date' => 'date',
             'time' => 'string',
             'distance' => 'decimal:2',
