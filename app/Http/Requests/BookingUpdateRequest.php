@@ -82,6 +82,11 @@ final class BookingUpdateRequest extends FormRequest
                 '1' => 'bail',
                 '2' => 'boolean',
             ],
+            'isCompleted' => [
+                '0' => 'sometimes',
+                '1' => 'bail',
+                '2' => 'boolean',
+            ],
             'finalPrice' => [
                 '0' => 'sometimes',
                 '1' => 'bail',

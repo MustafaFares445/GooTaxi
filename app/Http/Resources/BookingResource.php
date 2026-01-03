@@ -36,6 +36,7 @@ final class BookingResource extends JsonResource
             'finalPrice' => $this->final_price,
             'status' => $this->status,
             'offerId' => $this->offer_id,
+            'isCompleted' => $this->is_completed,
             'user' => UserResource::make($this->whenLoaded('user')),
             'driver' => DriverResource::make($this->whenLoaded('driver')),
             'offer' => OfferResource::make($this->whenLoaded('offer')),

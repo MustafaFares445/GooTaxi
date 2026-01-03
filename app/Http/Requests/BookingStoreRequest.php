@@ -65,6 +65,11 @@ final class BookingStoreRequest extends FormRequest
                 '2' => 'numeric',
                 '3' => 'between:-999999999.99,999999999.99',
             ],
+            'isCompleted' => [
+                '0' => 'bail',
+                '1' => 'nullable',
+                '2' => 'boolean',
+            ],
             'goingDistance' => [
                 '0' => 'bail',
                 '1' => 'nullable',
