@@ -70,4 +70,12 @@ final readonly class BookingController
         return BookingResource::make($booking->load('user', 'driver', 'offer'))
             ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
     }
+
+    public function destroy(Booking $booking): BookingResource
+    {
+        $booking->delete();
+
+        return BookingResource::make($booking)
+            ->additional(['message' => ResponseMessages::DELETED->message()]);
+    }
 }
