@@ -58,7 +58,7 @@ final readonly class BookingController
     {
         $updatedBooking = $this->bookingService->update(BookingData::from($request->validated()), $booking);
 
-        return BookingResource::make($booking->load('user', 'driver', 'offer'))
+        return BookingResource::make($updatedBooking->load('user', 'driver', 'offer'))
             ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 

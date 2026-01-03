@@ -20,7 +20,7 @@ Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
 
     Route::apiResource('/contacts', App\Http\Controllers\Dashboard\ContactController::class)->only(['index' , 'show']);
 
-    Route::apiResource('/bookings', App\Http\Controllers\Dashboard\BookingController::class)->except(['update' , 'destroy']);
+    Route::apiResource('/bookings', App\Http\Controllers\Dashboard\BookingController::class)->except('destroy');
 
     Route::apiResource('/drivers', App\Http\Controllers\Dashboard\DriverController::class);
 
