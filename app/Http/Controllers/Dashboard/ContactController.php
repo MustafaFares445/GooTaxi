@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Data\ContactData;
+use App\Http\Requests\ContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Models\Contact;
+use App\Services\ContactService;
 use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
-final class ContactController
+final readonly class ContactController
 {
+    public function __construct(private ContactService $contactService) {}
+
     /**
      * @tags Dashboard
      */
@@ -22,9 +27,11 @@ final class ContactController
     /**
      * @tags Dashboard
      */
-    public function show(Contact $contact): ContactResource
+    public function update(ContactRequest $request, Contact $contact): ContactResource
     {
-        return ContactResource::make($contact)
+        $updatedContact = $this->contactService->update(ContactData::from($request->validated()), $contact);
+
+        return ContactResource::make($updatedContact)
             ->additional(['message' => __(ResponseMessages::RETRIEVED->message())]);
     }
 }

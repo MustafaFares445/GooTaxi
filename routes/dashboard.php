@@ -18,7 +18,7 @@ Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
 
     Route::apiResource('/base_prices', App\Http\Controllers\Dashboard\BasePriceController::class);
 
-    Route::apiResource('/contacts', App\Http\Controllers\Dashboard\ContactController::class)->only(['index' , 'show']);
+    Route::apiResource('/contacts', App\Http\Controllers\Dashboard\ContactController::class)->only(['index' , 'update']);
 
     Route::apiResource('/bookings', App\Http\Controllers\Dashboard\BookingController::class);
 
