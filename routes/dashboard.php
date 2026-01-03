@@ -12,8 +12,8 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
-    Route::apiResource('/users', App\Http\Controllers\Dashboard\UserController::class);
     Route::get('/users/summary',[ App\Http\Controllers\Dashboard\UserController::class, 'summary']);
+    Route::apiResource('/users', App\Http\Controllers\Dashboard\UserController::class);
 
     Route::apiResource('/additional_prices', App\Http\Controllers\Dashboard\AdditionalPriceController::class);
 
