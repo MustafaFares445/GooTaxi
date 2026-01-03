@@ -22,3 +22,4 @@ Route::apiResource('/booking', BookingController::class)->only(['index', 'show',
 Route::post('/nearest-additional-price', ReturnNearestAdditionalPriceController::class)->middleware('auth:sanctum');
 Route::post('/check-offer', CheckOfferController::class)->middleware('auth:sanctum');
 Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/drivers/summary',[ App\Http\Controllers\Dashboard\DriverController::class, 'summary']);

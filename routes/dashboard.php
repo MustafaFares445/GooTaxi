@@ -13,6 +13,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
     Route::apiResource('/users', App\Http\Controllers\Dashboard\UserController::class);
+    Route::get('/users',[ App\Http\Controllers\Dashboard\UserController::class, 'summary']);
 
     Route::apiResource('/additional_prices', App\Http\Controllers\Dashboard\AdditionalPriceController::class);
 
@@ -22,6 +23,7 @@ Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
 
     Route::apiResource('/bookings', App\Http\Controllers\Dashboard\BookingController::class);
 
+    Route::get('/drivers/summary',[ App\Http\Controllers\Dashboard\DriverController::class, 'summary']);
     Route::apiResource('/drivers', App\Http\Controllers\Dashboard\DriverController::class);
 
     Route::apiResource('/offers', App\Http\Controllers\Dashboard\OfferController::class);

@@ -7,11 +7,12 @@ namespace App\Http\Resources;
 use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use MustafaFares\SelectiveResponse\Http\Resources\BaseApiResource;
 
 /**
  * @mixin Driver
  */
-final class DriverResource extends JsonResource
+final class DriverResource extends BaseApiResource
 {
     /**
      * Transform the resource into an array.

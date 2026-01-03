@@ -35,6 +35,19 @@ final class DriverController
 
     /**
      * @tags Dashboard
+     */
+    public function summary(DriverFilterRequest $request): AnonymousResourceCollection
+    {
+        $drivers = Driver::getQuery()
+            ->select(['id' , 'name'])
+            ->get();
+
+        return DriverResource::collection($drivers)
+            ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
+    }
+
+    /**
+     * @tags Dashboard
      *
      * @throws Throwable
      */

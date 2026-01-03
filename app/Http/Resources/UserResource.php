@@ -6,12 +6,12 @@ namespace App\Http\Resources;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use MustafaFares\SelectiveResponse\Http\Resources\BaseApiResource;
 
 /**
  * @mixin User
  */
-final class UserResource extends JsonResource
+final class UserResource extends BaseApiResource
 {
     /**
      * Transform the resource into an array.

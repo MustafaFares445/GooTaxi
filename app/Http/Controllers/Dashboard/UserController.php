@@ -35,6 +35,19 @@ final readonly class UserController
 
     /**
      * @tags Dashboard
+     */
+    public function summary(UserFilterRequest $request): AnonymousResourceCollection
+    {
+        $users = User::getQuery()
+            ->select(['id' , 'name'])
+            ->get();
+
+        return UserResource::collection($users)
+            ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
+    }
+
+    /**
+     * @tags Dashboard
      *
      * @throws Throwable
      */
