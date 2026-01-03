@@ -71,6 +71,9 @@ final readonly class BookingController
             ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
     }
 
+    /**
+     * @tags Dashboard
+     */
     public function destroy(Booking $booking): BookingResource
     {
         $booking->delete();
