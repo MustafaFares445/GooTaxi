@@ -17,9 +17,10 @@ Route::prefix('auth')->group(function () {
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
+Route::get('/drivers/summary',[ App\Http\Controllers\Dashboard\DriverController::class, 'summary']);
+Route::get('contacts', [App\Http\Controllers\Dashboard\ContactController::class, 'index']);
 Route::get('/booking/price', BookingPriceController::class);
 Route::apiResource('/booking', BookingController::class)->only(['index', 'show', 'store']);
 Route::post('/nearest-additional-price', ReturnNearestAdditionalPriceController::class)->middleware('auth:sanctum');
 Route::post('/check-offer', CheckOfferController::class)->middleware('auth:sanctum');
 Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('auth:sanctum');
-Route::get('/drivers/summary',[ App\Http\Controllers\Dashboard\DriverController::class, 'summary']);

@@ -11,9 +11,10 @@ Route::prefix('auth')->group(function () {
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
-Route::get('/drivers/summary',[ App\Http\Controllers\Dashboard\DriverController::class, 'summary']);
-Route::get('/users/summary',[ App\Http\Controllers\Dashboard\UserController::class, 'summary']);
+
 Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
+    Route::get('/drivers/summary',[ App\Http\Controllers\Dashboard\DriverController::class, 'summary']);
+    Route::get('/users/summary',[ App\Http\Controllers\Dashboard\UserController::class, 'summary']);
 
     Route::apiResource('/users', App\Http\Controllers\Dashboard\UserController::class);
 
@@ -21,7 +22,7 @@ Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
 
     Route::apiResource('/base_prices', App\Http\Controllers\Dashboard\BasePriceController::class);
 
-    Route::apiResource('/contacts', App\Http\Controllers\Dashboard\ContactController::class)->only(['index' , 'update']);
+    Route::put('/contacts', [App\Http\Controllers\Dashboard\ContactController::class, 'update']);
 
     Route::apiResource('/bookings', App\Http\Controllers\Dashboard\BookingController::class);
 
