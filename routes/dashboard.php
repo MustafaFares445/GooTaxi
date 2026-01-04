@@ -22,7 +22,7 @@ Route::middleware(['auth:sanctum', 'admin-only'])->group(function () {
 
     Route::apiResource('/base_prices', App\Http\Controllers\Dashboard\BasePriceController::class);
 
-    Route::put('/contacts', [App\Http\Controllers\Dashboard\ContactController::class, 'update']);
+    Route::apiResource('/contacts', App\Http\Controllers\Dashboard\ContactController::class)->only(['index' , 'update']);
 
     Route::apiResource('/bookings', App\Http\Controllers\Dashboard\BookingController::class);
 
