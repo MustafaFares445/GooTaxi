@@ -17,7 +17,7 @@ final class FeedbackController
      */
     public function index(): AnonymousResourceCollection
     {
-        return FeedbackResource::collection(Feedback::paginate(request()->get('perPage')))
+        return FeedbackResource::collection(Feedback::query()->latest()->paginate(request()->get('perPage')))
             ->additional(['message' => __(ResponseMessages::RETRIEVED->message())]);
     }
 
@@ -28,5 +28,16 @@ final class FeedbackController
     {
         return FeedbackResource::make(Feedback::create($request->validated()))
             ->additional(['message' => __(ResponseMessages::CREATED->message())]);
+    }
+
+    /**
+     * @tags Dashboard
+     */
+    public function destroy(Feedback $feedback): FeedbackResource
+    {
+        $feedback->delete();
+
+        return FeedbackResource::make($feedback)
+            ->additional(['message' => __(ResponseMessages::DELETED->message())]);
     }
 }
