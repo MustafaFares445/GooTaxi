@@ -2837,12 +2837,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/MustafaFares445/laravel-selective-response.git",
-                "reference": "f192457b520e9cc9229511d84c1730c3d8fb46da"
+                "reference": "7a7eabb19e53877ce69c353727a58f4dd5970003"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MustafaFares445/laravel-selective-response/zipball/f192457b520e9cc9229511d84c1730c3d8fb46da",
-                "reference": "f192457b520e9cc9229511d84c1730c3d8fb46da",
+                "url": "https://api.github.com/repos/MustafaFares445/laravel-selective-response/zipball/7a7eabb19e53877ce69c353727a58f4dd5970003",
+                "reference": "7a7eabb19e53877ce69c353727a58f4dd5970003",
                 "shasum": ""
             },
             "require": {
@@ -2878,8 +2878,8 @@
             ],
             "authors": [
                 {
-                    "name": "Your Name",
-                    "email": "your.email@example.com"
+                    "name": "Mustafa Fares",
+                    "email": "mustafa.fares.dev@gmail.com"
                 }
             ],
             "description": "Automatic API resource filtering based on model select() queries with optional Scramble documentation support",
@@ -2895,7 +2895,7 @@
                 "issues": "https://github.com/MustafaFares445/laravel-selective-response/issues",
                 "source": "https://github.com/MustafaFares445/laravel-selective-response/tree/v1.0.0"
             },
-            "time": "2025-12-30T20:00:02+00:00"
+            "time": "2026-01-04T10:51:31+00:00"
         },
         {
             "name": "myclabs/deep-copy",

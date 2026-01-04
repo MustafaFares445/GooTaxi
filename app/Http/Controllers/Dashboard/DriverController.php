@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Data\DriverData;
-use App\Http\Requests\DriverFilterRequest;
-use App\Http\Requests\DriverStoreRequest;
-use App\Http\Requests\DriverUpdateRequest;
-use App\Http\Resources\DriverResource;
+use Throwable;
 use App\Models\Driver;
+use App\Data\DriverData;
 use App\Services\DriverService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use App\Http\Resources\DriverResource;
+use App\Http\Requests\DriverStoreRequest;
+use App\Http\Requests\DriverFilterRequest;
+use App\Http\Requests\DriverUpdateRequest;
+use App\Http\Resources\DriverSummaryResource;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
+use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 final class DriverController
 {
@@ -42,7 +43,7 @@ final class DriverController
             ->select(['id' , 'name'])
             ->get();
 
-        return DriverResource::collection($drivers)
+        return DriverSummaryResource::collection($drivers)
             ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
     }
 

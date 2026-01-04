@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Data\UserData;
-use App\Http\Requests\UserFilterRequest;
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Resources\UserResource;
+use Throwable;
 use App\Models\User;
+use App\Data\UserData;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use App\Http\Resources\UserResource;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserFilterRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserSummaryResource;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
+use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 final readonly class UserController
 {
@@ -42,7 +43,7 @@ final readonly class UserController
             ->select(['id' , 'name'])
             ->get();
 
-        return UserResource::collection($users)
+        return UserSummaryResource::collection($users)
             ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
     }
 

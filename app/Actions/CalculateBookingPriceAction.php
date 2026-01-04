@@ -165,7 +165,7 @@ final readonly class CalculateBookingPriceAction
         $activeRange = $this->findActiveTimeRange();
 
         if ($activeRange !== null) {
-            return $this->extractTimeRangeAdjustments($activeRange);
+            return $this->extractTimeRangeAdjustments($activeRange , $data);
         }
 
         return $this->getAdditionalPricingFromCoordinates($data);
@@ -192,13 +192,15 @@ final readonly class CalculateBookingPriceAction
      *
      * @return array{pricePercentage: float, startPrice: float, priceOfGoingPerKm: float, returnPricePerKm: float}
      */
-    private function extractTimeRangeAdjustments(TimeRange $timeRange): array
+    private function extractTimeRangeAdjustments(TimeRange $timeRange , BookingData $data): array
     {
+        $additionalPriceData = $this->getAdditionalPricingFromCoordinates($data);
+
         return [
-            'pricePercentage' => $timeRange->price_percentage ?? 0,
-            'startPrice' => $timeRange->start_price ?? 0,
-            'priceOfGoingPerKm' => $timeRange->price_of_going_per_km ?? 0,
-            'returnPricePerKm' => $timeRange->return_price_per_km ?? 0,
+            'pricePercentage' => $timeRange->price_percentage ?? $additionalPriceData['pricePercentage'],
+            'startPrice' => $timeRange->start_price ?? $additionalPriceData['startPrice'],
+            'priceOfGoingPerKm' => $timeRange->price_of_going_per_km ?? $additionalPriceData['priceOfGoingPerKm'],
+            'returnPricePerKm' => $timeRange->return_price_per_km ?? $additionalPriceData['returnPricePerKm'],
         ];
     }
 
