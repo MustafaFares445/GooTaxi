@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\Enums\BookingStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -52,12 +53,14 @@ final class BookingStoreRequest extends FormRequest
             ],
             'date' => [
                 '0' => 'bail',
-                '1' => 'date',
-                '2' => 'date_format:Y-m-d',
+                '1' => 'nullable',
+                '2' => 'date',
+                '3' => 'date_format:Y-m-d',
             ],
             'time' => [
                 '0' => 'bail',
-                '1' => 'date_format:H:i:s',
+                '1' => 'nullable',
+                '2' => 'date_format:H:i:s',
             ],
             'distance' => [
                 '0' => 'bail',
@@ -138,5 +141,16 @@ final class BookingStoreRequest extends FormRequest
                 $validator->errors()->add('finalPrice', 'The final price field is required when location coordinates or distance fields are not provided.');
             }
         });
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (empty($this->date)) {
+            $this->merge(['date' => Carbon::now()->format('Y-m-d')]);
+        }
+
+        if (empty($this->time)) {
+            $this->merge(['time' => Carbon::now()->format('H:i:s')]);
+        }
     }
 }

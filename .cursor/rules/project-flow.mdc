@@ -1,0 +1,141 @@
+# Project Flow - File Structure and Code Patterns
+
+## File Location Patterns
+
+### Controllers
+- API Controllers: `app/Http/Controllers/API/{Model}Controller.php`
+- Dashboard Controllers: `app/Http/Controllers/Dashboard/{Model}Controller.php`
+- Single-action controllers use `__invoke()` method
+- Multi-action controllers follow RESTful conventions
+
+### Form Requests
+- Location: `app/Http/Requests/`
+- Naming patterns:
+  - `{Model}StoreRequest` - for create operations
+  - `{Model}UpdateRequest` - for update operations
+  - `{Model}FilterRequest` - for filtering/index operations
+  - `User{Model}Request` - for user-specific requests (e.g., `UserBookingRequest`)
+  - `BookingPriceRequest` - for specific operations
+
+### Services
+- Location: `app/Services/{Model}Service.php`
+- Used in controllers via dependency injection
+- Handle business logic for CRUD operations
+
+### Actions
+- Location: `app/Actions/`
+- Verb-based naming: `CalculateBookingPriceAction`, `ReturnNearestAdditionalPriceAction`, `GetOfferFromCouponCode`
+- Used for specific business logic operations
+
+### Data Transfer Objects (DTOs)
+- Location: `app/Data/`
+- Naming: `{Model}Data.php`
+- Subdirectories for grouped DTOs: `app/Data/Auth/` (LoginData, RegisterData, ResetPasswordData)
+
+### API Resources
+- Location: `app/Http/Resources/`
+- Naming: `{Model}Resource.php`, `{Model}SummaryResource.php`
+- Used for API response formatting
+
+### Models
+- Location: `app/Models/{Model}.php`
+- Related files:
+  - Factories: `database/factories/{Model}Factory.php`
+  - Policies: `app/Policies/{Model}Policy.php`
+  - Filter Traits: `app/Traits/FilterQueries/{Model}FilterQuery.php`
+
+### Enums
+- Location: `app/Enums/`
+- Examples: `BookingStatus`, `OfferStatus`, `ResponseMessages`
+
+### Routes
+- API routes: `routes/api.php`
+- Dashboard routes: `routes/dashboard.php` (with `auth:sanctum` and `admin-only` middleware)
+- Web routes: `routes/web.php`
+- Console routes: `routes/console.php`
+
+## Code Flow Patterns
+
+### Standard API Flow
+```
+Route → Controller → FormRequest (validation) → Service/Action → Data DTO → Resource → Response
+```
+
+### Dashboard Flow
+```
+Route (with middleware) → Controller → FormRequest → Service → Data DTO → Resource → Response
+```
+
+### Common Relationships
+- Controllers inject Services in constructor
+- Controllers use Actions via dependency injection in methods or constructor
+- Services use Data DTOs via `Data::from($request->validated())`
+- Controllers return Resources via `Resource::make()` or `Resource::collection()`
+
+## Search Optimization Guidelines
+
+### Before Searching
+1. **Check conversation history** - If a file was already read in this conversation, reference it from memory instead of re-reading
+2. **Predict file locations** - Use naming patterns above to construct file paths directly
+3. **Use targeted searches** - Search specific directories instead of entire codebase when possible
+
+### When to Read vs Search
+- **Read directly** when you know the exact file path based on patterns
+- **Search** when you need to find:
+  - All usages of a class/method
+  - Files matching a pattern you're unsure about
+  - Related files in the same feature area
+
+### Common File Groups
+When working on a feature, these files are typically related:
+- Controller → Request → Service → Data → Resource → Model → Policy → Factory
+- If modifying a model, check: migrations, factories, policies, filter traits, relationships
+
+### Avoid Redundant Reads
+- If you've read a controller, you likely know:
+  - Which Request classes it uses (check imports)
+  - Which Service it uses (constructor injection)
+  - Which Resource it returns
+  - Don't re-read these unless you need specific implementation details
+
+### Route Discovery
+- Check route files (`routes/api.php`, `routes/dashboard.php`) to understand:
+  - Which controllers handle which endpoints
+  - Middleware applied
+  - Route naming conventions
+
+## Specific Patterns in This Codebase
+
+### Booking Feature Files
+- Controller: `app/Http/Controllers/API/BookingController.php`
+- Requests: `BookingStoreRequest`, `BookingUpdateRequest`, `BookingFilterRequest`, `UserBookingRequest`, `UserBookingUpdateRequest`, `BookingPriceRequest`
+- Service: `app/Services/BookingService.php`
+- Action: `app/Actions/CalculateBookingPriceAction.php`
+- Data: `app/Data/BookingData.php`, `app/Data/BookingPriceData.php`
+- Resource: `app/Http/Resources/BookingResource.php`, `app/Http/Resources/BookingPriceResource.php`
+- Model: `app/Models/Booking.php`
+- Filter: `app/Traits/FilterQueries/BookingFilterQuery.php`
+- Enum: `app/Enums/BookingStatus.php`
+
+### Authentication Flow
+- Controller: `app/Http/Controllers/API/AuthController.php`
+- Service: `app/Services/AuthService.php`
+- Data: `app/Data/Auth/LoginData.php`, `app/Data/Auth/RegisterData.php`, `app/Data/Auth/ResetPasswordData.php`
+- Resource: `app/Http/Resources/AuthResource.php`
+
+## File Reading Strategy
+
+1. **Start with routes** - Understand the entry point
+2. **Read controller** - See what it uses (imports tell you related files)
+3. **Read related files as needed** - Only read what's necessary for the task
+4. **Use grep for specific patterns** - When you need to find usages, not implementations
+
+## Testing Patterns
+- Feature tests: `tests/Feature/Http/` for controllers
+- Unit tests: `tests/Unit/Actions/`, `tests/Unit/Services/`, `tests/Unit/Models/`
+- Test naming: `{Class}Test.php`
+
+## Middleware
+- Registered in: `bootstrap/app.php`
+- Custom middleware: `app/Http/Middleware/`
+- Example: `AdminOnlyMiddleware` registered as `admin-only` alias

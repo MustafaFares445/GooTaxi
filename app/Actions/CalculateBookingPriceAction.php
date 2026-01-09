@@ -47,7 +47,7 @@ final readonly class CalculateBookingPriceAction
             $data
         );
 
-        $offerDiscountRate = $this->getOfferDiscountRate($data->offerId);
+        $offerDiscountRate = $this->getOfferDiscountRate($data->offerId, $data);
         $finalPrice = $this->applyOfferDiscount($subtotal, $offerDiscountRate);
 
         return $this->buildPriceData(
@@ -162,7 +162,7 @@ final readonly class CalculateBookingPriceAction
      */
     private function getActiveTimeRangeAdjustments(BookingData $data): array
     {
-        $activeRange = $this->findActiveTimeRange();
+        $activeRange = $this->findActiveTimeRange($data);
 
         if ($activeRange !== null) {
             return $this->extractTimeRangeAdjustments($activeRange, $data);
@@ -174,17 +174,29 @@ final readonly class CalculateBookingPriceAction
     /**
      * Find the currently active time range based on day and time.
      */
-    private function findActiveTimeRange(): ?TimeRange
+    private function findActiveTimeRange(BookingData $data): ?TimeRange
     {
-        $now = Carbon::now();
-        $currentDay = $now->format('D');
-        $currentTime = $now->format('H:i:s');
+        $bookingDateTime = $this->getBookingDateTime($data);
+        $currentDay = $bookingDateTime->format('D');
+        $currentTime = $bookingDateTime->format('H:i:s');
 
         return TimeRange::query()
             ->whereJsonContains('days', $currentDay)
             ->where('from_time', '<=', $currentTime)
             ->where('to_time', '>=', $currentTime)
             ->first();
+    }
+
+    /**
+     * Get the booking date/time from data or use current time as fallback.
+     */
+    private function getBookingDateTime(BookingData $data): Carbon
+    {
+        if ($data->date !== null && $data->time !== null) {
+            return Carbon::parse($data->date.' '.$data->time);
+        }
+
+        return Carbon::now();
     }
 
     /**
@@ -241,13 +253,13 @@ final readonly class CalculateBookingPriceAction
      * Get the discount rate from a valid, active offer.
      * Returns 0 if offer doesn't exist or is invalid/expired.
      */
-    private function getOfferDiscountRate(?int $offerId): float
+    private function getOfferDiscountRate(?int $offerId, BookingData $data): float
     {
         if ($offerId === null) {
             return 0;
         }
 
-        $offer = $this->findValidOffer($offerId);
+        $offer = $this->findValidOffer($offerId, $data);
 
         return (float) ($offer?->discount_rate ?? 0);
     }
@@ -255,13 +267,15 @@ final readonly class CalculateBookingPriceAction
     /**
      * Find a valid, active offer by ID.
      */
-    private function findValidOffer(int $offerId): ?Offer
+    private function findValidOffer(int $offerId, BookingData $data): ?Offer
     {
+        $bookingDateTime = $this->getBookingDateTime($data);
+
         return Offer::query()
             ->where('id', $offerId)
             ->where('status', OfferStatus::Active)
-            ->whereDate('start_date', '<=', now())
-            ->whereDate('end_date', '>=', now())
+            ->whereDate('start_date', '<=', $bookingDateTime)
+            ->whereDate('end_date', '>=', $bookingDateTime)
             ->first();
     }
 }

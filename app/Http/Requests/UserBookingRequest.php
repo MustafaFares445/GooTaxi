@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\Enums\OfferStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 final class UserBookingRequest extends FormRequest
@@ -50,12 +51,14 @@ final class UserBookingRequest extends FormRequest
             ],
             'date' => [
                 '0' => 'bail',
-                '1' => 'date',
-                '2' => 'date_format:Y-m-d',
+                '1' => 'nullable',
+                '2' => 'date',
+                '3' => 'date_format:Y-m-d',
             ],
             'time' => [
                 '0' => 'bail',
-                '1' => 'date_format:H:i:s',
+                '1' => 'nullable',
+                '2' => 'date_format:H:i:s',
             ],
             'distance' => [
                 '0' => 'bail',
@@ -108,5 +111,16 @@ final class UserBookingRequest extends FormRequest
             ],
             'notes' => ['nullable', 'string'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (empty($this->date)) {
+            $this->merge(['date' => Carbon::now()->format('Y-m-d')]);
+        }
+
+        if (empty($this->time)) {
+            $this->merge(['time' => Carbon::now()->format('H:i:s')]);
+        }
     }
 }

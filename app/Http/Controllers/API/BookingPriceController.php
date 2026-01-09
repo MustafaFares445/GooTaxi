@@ -21,15 +21,18 @@ final readonly class BookingPriceController
      */
     public function __invoke(BookingPriceRequest $request)
     {
+        $validated = $request->validated();
+        $bookingDateTime = Carbon::parse($validated['date'].' '.$validated['time']);
+
         $offerId = Offer::query()
             ->where('coupon_code', $request->validated('couponCode'))
-            ->where('start_date', '<=', Carbon::now())
-            ->where('end_date', '>=', Carbon::now())
+            ->where('start_date', '<=', $bookingDateTime)
+            ->where('end_date', '>=', $bookingDateTime)
             ->first()?->value('id');
 
         $data = $this->calculateBookingPriceAction->handle(
             BookingData::from(
-                $request->validated() + ['offerId' => $offerId]
+                $validated + ['offerId' => $offerId]
             )
         );
 
