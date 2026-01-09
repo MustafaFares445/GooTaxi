@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Traits\FilterQueries;
 
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Exception;
@@ -35,6 +36,7 @@ trait BookingFilterQuery
                 AllowedFilter::scope('createdAfter'),
                 AllowedFilter::scope('createdBefore'),
                 AllowedFilter::scope('search'),
+                AllowedFilter::scope('pendingAndUpcoming'),
             ])
             ->allowedSorts([
                 AllowedSort::field('userId', 'user_id'),
@@ -88,5 +90,14 @@ trait BookingFilterQuery
                 ->orWhereRaw("to_location LIKE ? ESCAPE '!'", [$likeTerm])
                 ->orWhereRaw("status LIKE ? ESCAPE '!'", [$likeTerm]);
         });
+    }
+
+    public function scopePendingAndUpcoming($query, $value): Builder
+    {
+        if ($value === true || $value === 'true' || $value === '1' || $value === 1) {
+            return $query->whereIn('status', [BookingStatus::Pending, BookingStatus::Upcoming]);
+        }
+
+        return $query;
     }
 }

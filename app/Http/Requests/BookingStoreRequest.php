@@ -7,6 +7,7 @@ namespace App\Http\Requests;
 use App\Enums\BookingStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 final class BookingStoreRequest extends FormRequest
 {
@@ -83,22 +84,22 @@ final class BookingStoreRequest extends FormRequest
             ],
             'startingLat' => [
                 '0' => 'bail',
-                '1' => 'required',
+                '1' => 'nullable',
                 '2' => 'numeric',
             ],
             'startingLng' => [
                 '0' => 'bail',
-                '1' => 'required',
+                '1' => 'nullable',
                 '2' => 'numeric',
             ],
             'endingLat' => [
                 '0' => 'bail',
-                '1' => 'required',
+                '1' => 'nullable',
                 '2' => 'numeric',
             ],
             'endingLng' => [
                 '0' => 'bail',
-                '1' => 'required',
+                '1' => 'nullable',
                 '2' => 'numeric',
             ],
             'passengers' => [
@@ -117,7 +118,25 @@ final class BookingStoreRequest extends FormRequest
                 '2' => 'max:255',
                 '4' => Rule::enum(BookingStatus::class),
             ],
+            'finalPrice' => [
+                '0' => 'bail',
+                '1' => 'nullable',
+                '2' => 'numeric',
+            ],
             'notes' => ['nullable', 'string'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $hasLocation = ! empty($this->startingLat) && ! empty($this->startingLng)
+                && ! empty($this->endingLat) && ! empty($this->endingLng);
+            $hasDistance = ! empty($this->goingDistance) || ! empty($this->returnDistance);
+
+            if (! $hasLocation && ! $hasDistance && empty($this->finalPrice)) {
+                $validator->errors()->add('finalPrice', 'The final price field is required when location coordinates or distance fields are not provided.');
+            }
+        });
     }
 }

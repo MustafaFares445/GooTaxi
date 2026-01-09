@@ -35,6 +35,7 @@ final class BookingFilterRequest extends FormRequest
             'filter.createdAfter' => 'sometimes|date',
             'filter.createdBefore' => 'sometimes|date|after_or_equal:filter.createdAfter',
             'filter.search' => 'sometimes|string|max:255',
+            'filter.pendingAndUpcoming' => 'sometimes|boolean',
             'sort' => 'sometimes|string|in:userId,-userId,driverId,-driverId,fromLocation,-fromLocation,toLocation,-toLocation,date,-date,time,-time,distance,-distance,passengers,-passengers,extraLargeBags,-extraLargeBags,finalPrice,-finalPrice,status,-status,offerId,-offerId',
         ];
     }

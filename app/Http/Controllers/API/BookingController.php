@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use App\Data\BookingData;
-use App\Http\Requests\BookingFilterRequest;
-use App\Http\Requests\UserBookingRequest;
-use App\Http\Resources\BookingResource;
+use Throwable;
 use App\Models\Booking;
+use App\Data\BookingData;
 use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use App\Http\Resources\BookingResource;
+use App\Http\Requests\UserBookingRequest;
+use App\Http\Requests\BookingFilterRequest;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
+use App\Http\Requests\UserBookingUpdateRequest;
+use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 final readonly class BookingController
 {
@@ -59,5 +60,18 @@ final readonly class BookingController
     {
         return BookingResource::make($booking->load('driver', 'offer'))
             ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
+    }
+
+    /**
+     * @tags API
+     *
+     * @throws Throwable
+     */
+    public function update(UserBookingUpdateRequest $request, Booking $booking): BookingResource
+    {
+        $booking = $this->bookingService->update(BookingData::from($request->validated()), $booking);
+
+        return BookingResource::make($booking->load('driver', 'offer'))
+            ->additional(['message' => ResponseMessages::UPDATED->message()]);
     }
 }

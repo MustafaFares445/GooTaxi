@@ -23,6 +23,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float|null $distance
  * @property float|null $going_distance
  * @property float|null $return_distance
+ * @property float|null $starting_lat
+ * @property float|null $starting_lng
+ * @property float|null $ending_lat
+ * @property float|null $ending_lng
  * @property int $passengers
  * @property bool $extra_large_bags
  * @property float $final_price
@@ -56,6 +60,10 @@ final class Booking extends Model
         'is_completed',
         'going_distance',
         'return_distance',
+        'starting_lat',
+        'starting_lng',
+        'ending_lat',
+        'ending_lng',
     ];
 
     /**
@@ -74,6 +82,10 @@ final class Booking extends Model
             'distance' => 'decimal:2',
             'going_distance' => 'decimal:2',
             'return_distance' => 'decimal:2',
+            'starting_lat' => 'decimal:8',
+            'starting_lng' => 'decimal:8',
+            'ending_lat' => 'decimal:8',
+            'ending_lng' => 'decimal:8',
             'passengers' => 'integer',
             'extra_large_bags' => 'boolean',
             'final_price' => 'decimal:2',

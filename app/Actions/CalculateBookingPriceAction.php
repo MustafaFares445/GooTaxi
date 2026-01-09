@@ -165,7 +165,7 @@ final readonly class CalculateBookingPriceAction
         $activeRange = $this->findActiveTimeRange();
 
         if ($activeRange !== null) {
-            return $this->extractTimeRangeAdjustments($activeRange , $data);
+            return $this->extractTimeRangeAdjustments($activeRange, $data);
         }
 
         return $this->getAdditionalPricingFromCoordinates($data);
@@ -192,7 +192,7 @@ final readonly class CalculateBookingPriceAction
      *
      * @return array{pricePercentage: float, startPrice: float, priceOfGoingPerKm: float, returnPricePerKm: float}
      */
-    private function extractTimeRangeAdjustments(TimeRange $timeRange , BookingData $data): array
+    private function extractTimeRangeAdjustments(TimeRange $timeRange, BookingData $data): array
     {
         $additionalPriceData = $this->getAdditionalPricingFromCoordinates($data);
 
@@ -212,15 +212,22 @@ final readonly class CalculateBookingPriceAction
      */
     private function getAdditionalPricingFromCoordinates(BookingData $data): array
     {
-        $startingAdditionalPrice = $this->nearestAdditionalPriceAction->handle(
-            $data->startingLat,
-            $data->startingLng
-        );
+        $startingAdditionalPrice = null;
+        $endingAdditionalPrice = null;
 
-        $endingAdditionalPrice = $this->nearestAdditionalPriceAction->handle(
-            $data->endingLat,
-            $data->endingLng
-        );
+        if ($data->startingLat !== null && $data->startingLng !== null) {
+            $startingAdditionalPrice = $this->nearestAdditionalPriceAction->handle(
+                $data->startingLat,
+                $data->startingLng
+            );
+        }
+
+        if ($data->endingLat !== null && $data->endingLng !== null) {
+            $endingAdditionalPrice = $this->nearestAdditionalPriceAction->handle(
+                $data->endingLat,
+                $data->endingLng
+            );
+        }
 
         return [
             'pricePercentage' => 0,
