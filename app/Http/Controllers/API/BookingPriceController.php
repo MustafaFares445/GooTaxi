@@ -36,7 +36,7 @@ final readonly class BookingPriceController
             )
         );
 
-        return BookingPriceResource::make($data->toArray())
+        return BookingPriceResource::make($data)
             ->additional(['message' => ResponseMessages::RETRIEVED->message()]);
     }
 }

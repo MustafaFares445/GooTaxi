@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('bookings', static function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
             $table->string('from_location')->nullable();
             $table->string('to_location')->nullable();
-            $table->date('date');
-            $table->time('time');
+            $table->date('date')->nullable();
+            $table->time('time')->nullable();
             $table->decimal('distance', 10, 2)->nullable();
             $table->decimal('going_distance', 10, 2)->nullable();
             $table->decimal('return_distance', 10, 2)->nullable();
             $table->integer('passengers')->default(1);
             $table->boolean('extra_large_bags')->default(false);
-            $table->decimal('final_price', 10, 2);
+            $table->decimal('final_price', 10, 2)->nullable();
             $table->enum('status', array_values(BookingStatus::cases()))->default(BookingStatus::Pending->value);
             $table->foreignId('offer_id')->nullable()->constrained()->nullOnDelete();
             $table->longText('notes')->nullable();

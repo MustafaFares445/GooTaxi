@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 final class CheckOfferController
 {
-    private function __construct(private GetOfferFromCouponCode $getOfferFromCouponCode) {}
+    public function __construct(private GetOfferFromCouponCode $getOfferFromCouponCode) {}
 
     /**
      * @tags API

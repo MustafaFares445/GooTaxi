@@ -24,8 +24,11 @@ it('calculate final price with time range', function () {
         'van_price_percentage' => 20,
     ]);
 
+    $bookingDate = '2025-01-01';
+    $bookingDay = date('D', strtotime($bookingDate));
+
     TimeRange::factory()->create([
-        'days' => [now()->format('D')],
+        'days' => [$bookingDay],
         'from_time' => '00:00:00',
         'to_time' => '23:59:59',
         'start_price' => 5,
@@ -36,8 +39,8 @@ it('calculate final price with time range', function () {
 
     $offer = Offer::factory()->create([
         'discount_rate' => 10,
-        'start_date' => now()->yesterday(),
-        'end_date' => now()->tomorrow(),
+        'start_date' => '2024-12-01',
+        'end_date' => '2025-12-31',
     ]);
 
     $payload = [
@@ -45,7 +48,7 @@ it('calculate final price with time range', function () {
         'driverId' => Driver::factory()->create()->id,
         'fromLocation' => 'Sample fromLocation',
         'toLocation' => ['Sample toLocation 1', 'Sample toLocation 2'],
-        'date' => '2025-01-01',
+        'date' => $bookingDate,
         'time' => '10:00:00',
         'distance' => 10.5,
         'goingDistance' => 5,
@@ -129,8 +132,11 @@ it('calculate final price with van surcharge', function () {
         'van_price_percentage' => 20,
     ]);
 
+    $bookingDate = '2025-01-01';
+    $bookingDay = date('D', strtotime($bookingDate));
+
     TimeRange::factory()->create([
-        'days' => [now()->format('D')],
+        'days' => [$bookingDay],
         'from_time' => '00:00:00',
         'to_time' => '23:59:59',
         'start_price' => 0,
@@ -144,7 +150,7 @@ it('calculate final price with van surcharge', function () {
         'driverId' => Driver::factory()->create()->id,
         'fromLocation' => 'Sample fromLocation',
         'toLocation' => ['Sample toLocation 1', 'Sample toLocation 2'],
-        'date' => '2025-01-01',
+        'date' => $bookingDate,
         'time' => '10:00:00',
         'distance' => 10,
         'goingDistance' => 0,

@@ -9,7 +9,7 @@ use App\Models\Offer;
 
 final class GetOfferFromCouponCode
 {
-    public function handle(?string $couponsCode = null, ?int $offerId = null, bool $changeStatus = true): int
+    public function handle(?string $couponsCode = null, ?int $offerId = null, bool $changeStatus = true): ?int
     {
         if ($couponsCode) {
             $offer = Offer::query()
