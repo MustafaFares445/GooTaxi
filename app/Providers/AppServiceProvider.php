@@ -33,6 +33,10 @@ final class AppServiceProvider extends ServiceProvider
                 throw new AuthenticationException(__('Invalid credentials.'));
             }
 
+            if (! $user->is_admin && ! $user->hasVerifiedEmail()) {
+                throw new AuthenticationException(__('Please verify your email address before logging in.'));
+            }
+
             if (request()->is('api/dashboard/auth/login') && ! $user->is_admin) {
                 throw new AuthenticationException(__('Invalid credentials.'));
             }

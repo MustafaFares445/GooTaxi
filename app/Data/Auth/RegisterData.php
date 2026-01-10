@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Data\Auth;
 
 use App\Models\User;
-use App\Traits\HasModelAttributes;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\Validation\Email;
+use Mrmarchone\LaravelAutoCrud\Traits\HasModelAttributes;
 
 final class RegisterData extends Data
 {
