@@ -8,7 +8,9 @@ use App\Data\Auth\LoginData;
 use App\Data\Auth\ResetPasswordData;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\VerifyEmailRequest;
 use App\Http\Resources\AuthResource;
 use App\Services\AuthService;
 use App\Traits\MessageTrait;
@@ -58,6 +60,27 @@ final class AuthController
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $responseData = $this->authService->resetPassword(ResetPasswordData::from($request->validated()));
+
+        return $this->successMessage(message: __($responseData['status']), status: $responseData['httpStatus']);
+    }
+
+    /**
+     * @tags API
+     */
+    public function register(RegisterRequest $request): AuthResource
+    {
+        $authResult = $this->authService->register($request->validated());
+
+        return AuthResource::make($authResult)
+            ->additional(['message' => __('Registration successful. Please verify your email.')]);
+    }
+
+    /**
+     * @tags API
+     */
+    public function verifyEmail(VerifyEmailRequest $request): JsonResponse
+    {
+        $responseData = $this->authService->verifyEmail($request->validated());
 
         return $this->successMessage(message: __($responseData['status']), status: $responseData['httpStatus']);
     }
