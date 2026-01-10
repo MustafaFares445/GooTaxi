@@ -23,10 +23,11 @@ final class AdditionalPriceFilterRequest extends FormRequest
             'filter.returnPricePerKm' => 'sometimes|string|max:255',
             'filter.latitude' => 'sometimes|numeric:|max:255',
             'filter.longitude' => 'sometimes|numeric|max:255',
+            'filter.address' => 'sometimes|string|max:255',
             'filter.createdAfter' => 'sometimes|date',
             'filter.createdBefore' => 'sometimes|date|after_or_equal:filter.createdAfter',
             'filter.search' => 'sometimes|string|max:255',
-            'sort' => 'sometimes|string|in:startPrice,-startPrice,priceOfGoingPerKm,-priceOfGoingPerKm,returnPricePerKm,-returnPricePerKm,latitude,-latitude,longitude,-longitude',
+            'sort' => 'sometimes|string|in:startPrice,-startPrice,priceOfGoingPerKm,-priceOfGoingPerKm,returnPricePerKm,-returnPricePerKm,latitude,-latitude,longitude,-longitude,address,-address',
         ];
     }
 }

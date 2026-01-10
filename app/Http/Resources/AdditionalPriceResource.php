@@ -27,6 +27,7 @@ final class AdditionalPriceResource extends JsonResource
             'returnPricePerKm' => $this->return_price_per_km,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
+            'address' => $this->address,
             'createdAt' => $this->created_at->toDateTimeString(),
             'updatedAt' => $this->updated_at->toDateTimeString(),
         ];

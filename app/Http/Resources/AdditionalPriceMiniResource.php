@@ -23,6 +23,7 @@ final class AdditionalPriceMiniResource extends JsonResource
             'startPrice' => $this->start_price,
             'priceOfGoingPerKm' => $this->price_of_going_per_km,
             'returnPricePerKm' => $this->return_price_per_km,
+            'address' => $this->address,
         ];
     }
 }

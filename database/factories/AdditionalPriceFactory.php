@@ -29,6 +29,7 @@ final class AdditionalPriceFactory extends Factory
             'return_price_per_km' => fake()->randomFloat(2, 1.50, 4.00),
             'latitude' => $baseLat,
             'longitude' => $baseLng,
+            'address' => fake()->address(),
         ];
     }
 }

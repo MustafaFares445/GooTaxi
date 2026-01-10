@@ -26,6 +26,7 @@ final class AdditionalPriceData extends Data
         #[Numeric]
         public ?int $latitude = null,
         #[Numeric]
-        public ?int $longitude = null
+        public ?int $longitude = null,
+        public ?string $address = null
     ) {}
 }

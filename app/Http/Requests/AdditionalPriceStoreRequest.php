@@ -41,6 +41,11 @@ final class AdditionalPriceStoreRequest extends FormRequest
                 '1' => 'numeric',
                 '2' => 'between:-999999999.99,999999999.99',
             ],
+            'address' => [
+                '0' => 'nullable',
+                '1' => 'string',
+                '2' => 'max:255',
+            ],
         ];
     }
 }

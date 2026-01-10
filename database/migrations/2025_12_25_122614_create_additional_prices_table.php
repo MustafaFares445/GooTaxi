@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('return_price_per_km', 10, 2);
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }

@@ -22,6 +22,7 @@ trait AdditionalPriceFilterQuery
                 AllowedFilter::partial('startPrice', 'start_price'),
                 AllowedFilter::partial('priceOfGoingPerKm', 'price_of_going_per_km'),
                 AllowedFilter::partial('returnPricePerKm', 'return_price_per_km'),
+                AllowedFilter::partial('address', 'address'),
                 AllowedFilter::scope('createdAfter'),
                 AllowedFilter::scope('createdBefore'),
                 AllowedFilter::scope('search'),
@@ -30,6 +31,7 @@ trait AdditionalPriceFilterQuery
                 AllowedSort::field('startPrice', 'start_price'),
                 AllowedSort::field('priceOfGoingPerKm', 'price_of_going_per_km'),
                 AllowedSort::field('returnPricePerKm', 'return_price_per_km'),
+                AllowedSort::field('address', 'address'),
             ])
             ->defaultSort('-created_at');
     }
@@ -70,6 +72,7 @@ trait AdditionalPriceFilterQuery
                 ->orWhereRaw("return_price_per_km LIKE ? ESCAPE '!'", [$likeTerm])
                 ->orWhereRaw("latitude LIKE ? ESCAPE '!'", [$likeTerm])
                 ->orWhereRaw("longitude LIKE ? ESCAPE '!'", [$likeTerm])
+                ->orWhereRaw("address LIKE ? ESCAPE '!'", [$likeTerm])
                 ->orWhereRaw("id LIKE ? ESCAPE '!'", [$likeTerm]);
         });
     }

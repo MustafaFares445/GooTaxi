@@ -17,13 +17,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $return_price_per_km
  * @property float $latitude
  * @property float $longitude
+ * @property string|null $address
  * @property-read CarbonInterface $created_at
  * @property-read CarbonInterface $updated_at
  */
 final class AdditionalPrice extends Model
 {
     /** @use HasFactory<AdditionalPriceFactory> */
-    use AdditionalPriceFilterQuery, HasFactory, HasFactory;
+    use AdditionalPriceFilterQuery, HasFactory;
 
     protected $fillable = [
         'start_price',
@@ -31,6 +32,7 @@ final class AdditionalPrice extends Model
         'return_price_per_km',
         'latitude',
         'longitude',
+        'address',
     ];
 
     /**

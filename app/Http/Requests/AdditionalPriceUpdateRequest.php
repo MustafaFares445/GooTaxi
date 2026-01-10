@@ -46,6 +46,12 @@ final class AdditionalPriceUpdateRequest extends FormRequest
                 '2' => 'numeric',
                 '3' => 'between:-999999999.99,999999999.99',
             ],
+            'address' => [
+                '0' => 'sometimes',
+                '1' => 'nullable',
+                '2' => 'string',
+                '3' => 'max:255',
+            ],
         ];
     }
 }

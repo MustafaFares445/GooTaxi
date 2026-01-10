@@ -28,6 +28,7 @@ it('creates, shows, updates and deletes a additionalPrice', function () {
         'returnPricePerKm' => 10.5,
         'latitude' => 10.5,
         'longitude' => 10.5,
+        'address' => '123 Main Street, City',
     ];
 
     $create = $this->postJson('/api/dashboard/additional_prices', $payload);
@@ -45,6 +46,7 @@ it('creates, shows, updates and deletes a additionalPrice', function () {
         'returnPricePerKm' => 10.5,
         'latitude' => 10.5,
         'longitude' => 10.5,
+        'address' => '456 Oak Avenue, Town',
     ];
 
     $update = $this->putJson("/api/dashboard/additional_prices/{$id}", $updatePayload);
@@ -69,6 +71,7 @@ it('forbids unauthorized access to additional prices CRUD operations', function 
         'returnPricePerKm' => 10.5,
         'latitude' => 10.5,
         'longitude' => 10.5,
+        'address' => '789 Pine Road, Village',
     ])->assertForbidden();
 
     $this->putJson('/api/dashboard/additional_prices/'.$model->id, [
@@ -77,6 +80,7 @@ it('forbids unauthorized access to additional prices CRUD operations', function 
         'returnPricePerKm' => 10.5,
         'latitude' => 10.5,
         'longitude' => 10.5,
+        'address' => '321 Elm Street, Hamlet',
     ])->assertForbidden();
 
     $this->deleteJson('/api/dashboard/additional_prices/'.$model->id)->assertForbidden();
