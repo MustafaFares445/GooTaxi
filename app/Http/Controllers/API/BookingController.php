@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\API;
 
-use Throwable;
-use App\Models\Booking;
 use App\Data\BookingData;
+use App\Http\Requests\BookingFilterRequest;
+use App\Http\Requests\UserBookingRequest;
+use App\Http\Requests\UserBookingUpdateRequest;
+use App\Http\Resources\BookingResource;
+use App\Models\Booking;
 use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\BookingResource;
-use App\Http\Requests\UserBookingRequest;
-use App\Http\Requests\BookingFilterRequest;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\UserBookingUpdateRequest;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final readonly class BookingController
 {
@@ -28,7 +27,7 @@ final readonly class BookingController
     public function index(BookingFilterRequest $request): AnonymousResourceCollection
     {
         $bookings = Booking::getQuery()
-            ->where('user_id', Auth::id())
+            ->where('user_id', auth('sanctum')->id())
             ->paginate($request->get('perPage', 20));
 
         return BookingResource::collection($bookings)
@@ -43,7 +42,7 @@ final readonly class BookingController
     public function store(UserBookingRequest $request): JsonResponse
     {
         $booking = $this->bookingService->store(
-            BookingData::from($request->validated() + ['userId' => Auth::id()]),
+            BookingData::from($request->validated() + ['userId' => auth('sanctum')->id()]),
             $request->validated('couponCode')
         );
 
