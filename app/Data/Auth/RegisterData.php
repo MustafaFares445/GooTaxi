@@ -26,6 +26,6 @@ final class RegisterData extends Data
         #[Min(8), Max(191)]
         public string $password,
         #[Max(36)]
-        public ?string $tenantId = null,
+        public string $phoneNumber,
     ) {}
 }

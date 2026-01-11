@@ -84,6 +84,7 @@ final class AuthService
         $user = User::create([
             'name' => $registerData->name,
             'email' => $registerData->email,
+            'phone_number' => $registerData->phoneNumber,
             'password' => $registerData->password,
             'email_verification_otp' => $otp,
             'email_verification_otp_expires_at' => Carbon::now()->addMinutes(15),
@@ -95,13 +96,11 @@ final class AuthService
     }
 
     /**
-     * @param  array{email: string, otp: string}  $data
      * @return array{httpStatus: int, status: string}
      */
-    public function verifyEmail(array $data): array
+    public function verifyEmail(VerifyEmailData $data): array
     {
-        $verifyData = VerifyEmailData::from($data);
-        $user = User::where('email', $verifyData->email)->firstOrFail();
+        $user = User::where('email', $data->email)->firstOrFail();
 
         if ($user->hasVerifiedEmail()) {
             return [
@@ -110,7 +109,7 @@ final class AuthService
             ];
         }
 
-        if (! $user->email_verification_otp || $user->email_verification_otp !== $verifyData->otp) {
+        if (! $user->email_verification_otp || $user->email_verification_otp !== $data->otp) {
             return [
                 'httpStatus' => ResponseAlias::HTTP_FORBIDDEN,
                 'status' => __('Invalid verification code'),

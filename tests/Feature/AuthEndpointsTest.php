@@ -89,7 +89,7 @@ it('registers a new user and generates an OTP', function () {
     $response = $this->postJson('/api/auth/register', [
         'name' => 'John Doe',
         'email' => 'john@example.com',
-        'phone' => '1234567890',
+        'phoneNumber' => '1234567890',
         'password' => 'password123',
         'password_confirmation' => 'password123',
     ]);

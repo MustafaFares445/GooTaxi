@@ -9,6 +9,7 @@ use App\Traits\MessageTrait;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
+use App\Data\Auth\VerifyEmailData;
 use App\Http\Requests\LoginRequest;
 use App\Data\Auth\ResetPasswordData;
 use App\Http\Resources\AuthResource;
@@ -82,7 +83,7 @@ final class AuthController
      */
     public function verifyEmail(VerifyEmailRequest $request): JsonResponse
     {
-        $responseData = $this->authService->verifyEmail($request->validated());
+        $responseData = $this->authService->verifyEmail(VerifyEmailData::from($request->validated()));
 
         return $this->successMessage(message: __($responseData['status']), status: $responseData['httpStatus']);
     }
