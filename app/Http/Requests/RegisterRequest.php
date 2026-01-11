@@ -19,8 +19,8 @@ final class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'email', 'max:191', Rule::unique('users', 'email')],
+            'phone' => ['required', 'string', 'max:191', Rule::unique('users', 'phone')],
             'password' => ['required', 'string', 'min:8', 'max:191', 'confirmed'],
-            'tenantId' => ['nullable', 'string', 'max:36'],
         ];
     }
 }

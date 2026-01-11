@@ -15,7 +15,7 @@ final class AuthResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'token' => $this->resource['token'],
+            'token' => $this->resource['token'] ?? null,
             'tokenType' => 'Bearer',
             'user' => UserResource::make($this->resource['user']),
         ];

@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Data\Auth\LoginData;
-use App\Data\Auth\ResetPasswordData;
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\VerifyEmailRequest;
-use App\Http\Resources\AuthResource;
-use App\Services\AuthService;
 use App\Traits\MessageTrait;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Services\AuthService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Requests\LoginRequest;
+use App\Data\Auth\ResetPasswordData;
+use App\Http\Resources\AuthResource;
+use App\Http\Resources\UserResource;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\VerifyEmailRequest;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResendVerificationRequest;
 
 final class AuthController
 {
@@ -67,11 +69,11 @@ final class AuthController
     /**
      * @tags API
      */
-    public function register(RegisterRequest $request): AuthResource
+    public function register(RegisterRequest $request): UserResource
     {
-        $authResult = $this->authService->register($request->validated());
+        $user = $this->authService->register($request->validated());
 
-        return AuthResource::make($authResult)
+        return UserResource::make($user)
             ->additional(['message' => __('Registration successful. Please verify your email.')]);
     }
 
@@ -81,6 +83,16 @@ final class AuthController
     public function verifyEmail(VerifyEmailRequest $request): JsonResponse
     {
         $responseData = $this->authService->verifyEmail($request->validated());
+
+        return $this->successMessage(message: __($responseData['status']), status: $responseData['httpStatus']);
+    }
+
+    /**
+     * @tags API
+     */
+    public function resendVerification(ResendVerificationRequest $request): JsonResponse
+    {
+        $responseData = $this->authService->resendVerification($request->validated('email'));
 
         return $this->successMessage(message: __($responseData['status']), status: $responseData['httpStatus']);
     }

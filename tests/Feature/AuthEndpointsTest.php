@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
@@ -78,4 +81,166 @@ it('resets a password with a valid token', function () {
     $response->assertOk();
     expect($response->json('message'))->not()->toBeEmpty();
     expect(Hash::check('new-password-123', $user->fresh()->password))->toBeTrue();
+});
+
+it('registers a new user and generates an OTP', function () {
+    Notification::fake();
+
+    $response = $this->postJson('/api/auth/register', [
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'phone' => '1234567890',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+    ]);
+
+    $response->assertCreated();
+    expect($response->json('message'))->toBe(__('Registration successful. Please verify your email.'));
+
+    $user = User::where('email', 'john@example.com')->first();
+    expect($user)->not()->toBeNull();
+    expect($user->email_verification_otp)->not()->toBeNull();
+    expect($user->email_verification_otp_expires_at)->not()->toBeNull();
+    expect(mb_strlen($user->email_verification_otp))->toBe(6);
+    expect($user->hasVerifiedEmail())->toBeFalse();
+});
+
+it('verifies email with a valid OTP', function () {
+    Event::fake();
+    $user = User::factory()->create([
+        'email_verification_otp' => '123456',
+        'email_verification_otp_expires_at' => Carbon::now()->addMinutes(15),
+        'email_verified_at' => null,
+    ]);
+
+    $response = $this->postJson('/api/auth/verify-email', [
+        'email' => $user->email,
+        'otp' => '123456',
+    ]);
+
+    $response->assertOk();
+    expect($response->json('message'))->toBe(__('Email verified successfully'));
+
+    $user->refresh();
+    expect($user->hasVerifiedEmail())->toBeTrue();
+    expect($user->email_verification_otp)->toBeNull();
+    expect($user->email_verification_otp_expires_at)->toBeNull();
+
+    Event::assertDispatched(Verified::class);
+});
+
+it('fails to verify email with an invalid OTP', function () {
+    $user = User::factory()->create([
+        'email_verification_otp' => '123456',
+        'email_verification_otp_expires_at' => Carbon::now()->addMinutes(15),
+        'email_verified_at' => null,
+    ]);
+
+    $response = $this->postJson('/api/auth/verify-email', [
+        'email' => $user->email,
+        'otp' => '000000',
+    ]);
+
+    $response->assertForbidden();
+    expect($response->json('message'))->toBe(__('Invalid verification code'));
+
+    $user->refresh();
+    expect($user->hasVerifiedEmail())->toBeFalse();
+});
+
+it('fails to verify email with an expired OTP', function () {
+    $user = User::factory()->create([
+        'email_verification_otp' => '123456',
+        'email_verification_otp_expires_at' => Carbon::now()->subMinutes(1),
+        'email_verified_at' => null,
+    ]);
+
+    $response = $this->postJson('/api/auth/verify-email', [
+        'email' => $user->email,
+        'otp' => '123456',
+    ]);
+
+    $response->assertForbidden();
+    expect($response->json('message'))->toBe(__('Verification code has expired'));
+
+    $user->refresh();
+    expect($user->hasVerifiedEmail())->toBeFalse();
+});
+
+it('returns success when verifying an already verified email', function () {
+    $user = User::factory()->create([
+        'email_verified_at' => Carbon::now(),
+    ]);
+
+    $response = $this->postJson('/api/auth/verify-email', [
+        'email' => $user->email,
+        'otp' => '123456',
+    ]);
+
+    $response->assertOk();
+    expect($response->json('message'))->toBe(__('Email already verified'));
+});
+
+it('resends verification code', function () {
+    Notification::fake();
+    $user = User::factory()->create([
+        'email_verification_otp' => '111111',
+        'email_verification_otp_expires_at' => Carbon::now()->addMinutes(5),
+        'email_verified_at' => null,
+    ]);
+
+    $oldOtp = $user->email_verification_otp;
+
+    $response = $this->postJson('/api/auth/resend-verification', [
+        'email' => $user->email,
+    ]);
+
+    $response->assertOk();
+    expect($response->json('message'))->toBe(__('Verification code sent successfully'));
+
+    $user->refresh();
+    expect($user->email_verification_otp)->not()->toBe($oldOtp);
+    expect($user->email_verification_otp)->not()->toBeNull();
+    expect($user->email_verification_otp_expires_at)->not()->toBeNull();
+});
+
+it('returns success when resending verification for already verified email', function () {
+    $user = User::factory()->create([
+        'email_verified_at' => Carbon::now(),
+    ]);
+
+    $response = $this->postJson('/api/auth/resend-verification', [
+        'email' => $user->email,
+    ]);
+
+    $response->assertOk();
+    expect($response->json('message'))->toBe(__('Email already verified'));
+});
+
+it('validates email exists when verifying', function () {
+    $response = $this->postJson('/api/auth/verify-email', [
+        'email' => 'nonexistent@example.com',
+        'otp' => '123456',
+    ]);
+
+    $response->assertUnprocessable();
+});
+
+it('validates OTP format when verifying', function () {
+    $user = User::factory()->create();
+
+    $response = $this->postJson('/api/auth/verify-email', [
+        'email' => $user->email,
+        'otp' => '12345',
+    ]);
+
+    $response->assertUnprocessable();
+});
+
+it('validates email exists when resending verification', function () {
+    $response = $this->postJson('/api/auth/resend-verification', [
+        'email' => 'nonexistent@example.com',
+    ]);
+
+    $response->assertUnprocessable();
 });

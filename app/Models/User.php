@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmailNotification;
 use App\Traits\FilterQueries\UserFilterQuery;
 use App\Traits\HasMediaConversions;
 use Carbon\CarbonInterface;
@@ -23,6 +24,8 @@ use Spatie\MediaLibrary\HasMedia;
  * @property string|null $phone_number
  * @property bool $is_admin
  * @property-read CarbonInterface|null $email_verified_at
+ * @property string|null $email_verification_otp
+ * @property CarbonInterface|null $email_verification_otp_expires_at
  * @property-read string $password
  * @property-read string|null $remember_token
  * @property-read CarbonInterface $created_at
@@ -39,6 +42,8 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'phone_number',
         'is_admin',
         'email_verified_at',
+        'email_verification_otp',
+        'email_verification_otp_expires_at',
         'password',
     ];
 
@@ -62,6 +67,8 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'phone_number' => 'string',
             'is_admin' => 'boolean',
             'email_verified_at' => 'datetime',
+            'email_verification_otp' => 'string',
+            'email_verification_otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'remember_token' => 'string',
             'created_at' => 'datetime',
@@ -72,5 +79,10 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmailNotification);
     }
 }

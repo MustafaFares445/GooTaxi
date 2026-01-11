@@ -17,6 +17,7 @@ Route::prefix('auth')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
     Route::post('verify-email', [AuthController::class, 'verifyEmail']);
+    Route::post('resend-verification', [AuthController::class, 'resendVerification']);
 });
 
 Route::get('/drivers/summary', [App\Http\Controllers\Dashboard\DriverController::class, 'summary']);

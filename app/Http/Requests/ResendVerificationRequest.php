@@ -6,7 +6,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class VerifyEmailRequest extends FormRequest
+final class ResendVerificationRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,7 +17,6 @@ final class VerifyEmailRequest extends FormRequest
     {
         return [
             'email' => ['required', 'email', 'exists:users,email'],
-            'otp' => ['required', 'string', 'size:6'],
         ];
     }
 }
