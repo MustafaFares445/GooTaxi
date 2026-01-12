@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -64,7 +64,7 @@ it('sends a password reset link', function () {
 
     $response->assertOk();
     expect($response->json('message'))->not()->toBeEmpty();
-    Notification::assertSentTo($user, ResetPassword::class);
+    Notification::assertSentTo($user, ResetPasswordNotification::class);
 });
 
 it('resets a password with a valid token', function () {
