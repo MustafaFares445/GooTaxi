@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use Throwable;
-use App\Models\Driver;
 use App\Data\DriverData;
+use App\Http\Requests\DriverFilterRequest;
+use App\Http\Requests\DriverStoreRequest;
+use App\Http\Requests\DriverUpdateRequest;
+use App\Http\Resources\DriverResource;
+use App\Http\Resources\DriverSummaryResource;
+use App\Models\Driver;
 use App\Services\DriverService;
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\DriverResource;
-use App\Http\Requests\DriverStoreRequest;
-use App\Http\Requests\DriverFilterRequest;
-use App\Http\Requests\DriverUpdateRequest;
-use App\Http\Resources\DriverSummaryResource;
-use Symfony\Component\HttpFoundation\Response;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class DriverController
 {
@@ -35,12 +35,19 @@ final class DriverController
     }
 
     /**
-     * @tags Dashboard
+     * Get drivers summary list
+     *
+     * This endpoint returns a simplified list of all drivers with only their ID and name.
+     * Useful for dropdowns and selection lists in the API.
+     *
+     * @operation getDriversSummary
+     *
+     * @tags API
      */
     public function summary(DriverFilterRequest $request): AnonymousResourceCollection
     {
         $drivers = Driver::getQuery()
-            ->select(['id' , 'name'])
+            ->select(['id', 'name'])
             ->get();
 
         return DriverSummaryResource::collection($drivers)

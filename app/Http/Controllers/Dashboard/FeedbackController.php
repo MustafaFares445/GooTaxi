@@ -9,6 +9,7 @@ use App\Http\Requests\FeedbackRequest;
 use App\Http\Resources\FeedbackResource;
 use App\Models\Feedback;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 final class FeedbackController
 {
@@ -22,7 +23,16 @@ final class FeedbackController
     }
 
     /**
+     * Submit feedback
+     *
+     * This endpoint allows authenticated users to submit feedback about their experience.
+     * The feedback is stored and can be viewed by administrators.
+     *
+     * @operation storeFeedback
+     *
      * @tags API
+     *
+     * @throws ValidationException 422 Invalid feedback data
      */
     public function store(FeedbackRequest $request): FeedbackResource
     {

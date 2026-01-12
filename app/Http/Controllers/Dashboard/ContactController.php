@@ -16,7 +16,14 @@ final readonly class ContactController
     public function __construct(private ContactService $contactService) {}
 
     /**
-     * @tags Dashboard
+     * Get contact information
+     *
+     * This endpoint retrieves the contact information (phone, email, address, etc.)
+     * that is displayed to users in the application.
+     *
+     * @operation getContacts
+     *
+     * @tags API
      */
     public function index(): ContactResource
     {

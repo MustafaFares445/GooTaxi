@@ -13,6 +13,7 @@ use App\Models\Booking;
 use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\ValidationException;
 use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -22,7 +23,17 @@ final readonly class BookingController
     public function __construct(private BookingService $bookingService) {}
 
     /**
+     * Get paginated list of user bookings
+     *
+     * This endpoint retrieves a paginated list of bookings for the authenticated user.
+     * Supports filtering by various criteria such as driver, location, date, time, status, and more.
+     * Results can be sorted and paginated.
+     *
+     * @operation index
+     *
      * @tags API
+     *
+     * @throws ValidationException 422 Invalid filter or pagination parameters
      */
     public function index(BookingFilterRequest $request): AnonymousResourceCollection
     {
@@ -35,9 +46,18 @@ final readonly class BookingController
     }
 
     /**
+     * Create a new booking
+     *
+     * This endpoint creates a new booking for the authenticated user. The booking includes
+     * location details, date, time, distance, passengers, and optional coupon code for discounts.
+     * The system calculates the final price based on base prices, additional prices, and applicable offers.
+     *
+     * @operation store
+     *
      * @tags API
      *
-     * @throws Throwable
+     * @throws ValidationException 422 Invalid booking data, invalid coupon code, or validation failed
+     * @throws Throwable 500 Internal server error during booking creation
      */
     public function store(UserBookingRequest $request): JsonResponse
     {
@@ -53,6 +73,13 @@ final readonly class BookingController
     }
 
     /**
+     * Get a specific booking details
+     *
+     * This endpoint retrieves detailed information about a specific booking.
+     * The user can only access their own bookings.
+     *
+     * @operation show
+     *
      * @tags API
      */
     public function show(Booking $booking): BookingResource
@@ -62,9 +89,17 @@ final readonly class BookingController
     }
 
     /**
+     * Update an existing booking
+     *
+     * This endpoint allows the authenticated user to update their booking details.
+     * Only the user who owns the booking can update it.
+     *
+     * @operation update
+     *
      * @tags API
      *
-     * @throws Throwable
+     * @throws ValidationException 422 Invalid booking update data
+     * @throws Throwable 500 Internal server error during booking update
      */
     public function update(UserBookingUpdateRequest $request, Booking $booking): BookingResource
     {

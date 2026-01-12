@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
+use Random\RandomException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 final class AuthService
@@ -73,7 +74,8 @@ final class AuthService
 
     /**
      * @param  array{name: string, email: string, password: string, password_confirmation?: string}  $data
-     * @return array{user: User, token: string}
+     *
+     * @throws RandomException
      */
     public function register(array $data): User
     {
@@ -96,7 +98,7 @@ final class AuthService
     }
 
     /**
-     * @return array{httpStatus: int, status: string}
+     * @return array{user: User, token: string}
      */
     public function verifyEmail(VerifyEmailData $data): array
     {
@@ -104,47 +106,30 @@ final class AuthService
 
         if ($user->hasVerifiedEmail()) {
             return [
-                'httpStatus' => ResponseAlias::HTTP_OK,
-                'status' => __('Email already verified'),
+                'user' => $user,
+                'token' => $user->createToken('api-token')->plainTextToken,
             ];
         }
 
-        if (! $user->email_verification_otp || $user->email_verification_otp !== $data->otp) {
-            return [
-                'httpStatus' => ResponseAlias::HTTP_FORBIDDEN,
-                'status' => __('Invalid verification code'),
-            ];
-        }
+        Gate::forUser($user)->authorize('verify-email', [$data->otp]);
 
-        if ($user->email_verification_otp_expires_at && $user->email_verification_otp_expires_at->isPast()) {
-            return [
-                'httpStatus' => ResponseAlias::HTTP_FORBIDDEN,
-                'status' => __('Verification code has expired'),
-            ];
-        }
+        $user->update([
+            'email_verification_otp' => null,
+            'email_verification_otp_expires_at' => null,
+        ]);
 
-        if ($user->markEmailAsVerified()) {
-            $user->update([
-                'email_verification_otp' => null,
-                'email_verification_otp_expires_at' => null,
-            ]);
-
-            event(new Verified($user));
-
-            return [
-                'httpStatus' => ResponseAlias::HTTP_OK,
-                'status' => __('Email verified successfully'),
-            ];
-        }
+        event(new Verified($user));
 
         return [
-            'httpStatus' => ResponseAlias::HTTP_UNPROCESSABLE_ENTITY,
-            'status' => __('Failed to verify email'),
+            'user' => $user,
+            'token' => $user->createToken('api-token')->plainTextToken,
         ];
     }
 
     /**
      * @return array{httpStatus: int, status: string}
+     *
+     * @throws RandomException
      */
     public function resendVerification(string $email): array
     {
@@ -172,6 +157,9 @@ final class AuthService
         ];
     }
 
+    /**
+     * @throws RandomException
+     */
     private function generateOtp(): string
     {
         return mb_str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
