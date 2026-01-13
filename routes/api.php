@@ -23,7 +23,7 @@ Route::prefix('auth')->group(function () {
 Route::get('/drivers/summary', [App\Http\Controllers\Dashboard\DriverController::class, 'summary']);
 Route::get('contacts', [App\Http\Controllers\Dashboard\ContactController::class, 'index']);
 Route::get('/booking/price', BookingPriceController::class);
-Route::apiResource('/booking', BookingController::class)->only(['index', 'show', 'store']);
+Route::apiResource('/booking', BookingController::class)->only(['index', 'show', 'store' , 'update']);
 Route::post('/nearest-additional-price', ReturnNearestAdditionalPriceController::class);
 Route::post('/check-offer', CheckOfferController::class);
 Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('auth:sanctum');
