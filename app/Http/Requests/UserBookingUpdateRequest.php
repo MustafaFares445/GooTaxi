@@ -37,7 +37,7 @@ final class UserBookingUpdateRequest extends FormRequest
                 return;
             }
 
-            if (! in_array($booking->status, [BookingStatus::Pending->value, BookingStatus::Upcoming->value], true)) {
+            if (! in_array($booking->status->value, [BookingStatus::Pending->value, BookingStatus::Upcoming->value], true)) {
                 $validator->errors()->add(
                     'status',
                     __('Booking can only be updated when it is in pending or upcoming status.')
