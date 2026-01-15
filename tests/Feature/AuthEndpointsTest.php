@@ -331,3 +331,39 @@ it('validates email exists when resetting password', function () {
 
     $response->assertUnprocessable();
 });
+
+it('prevents race condition when multiple password reset requests are made concurrently', function () {
+    Notification::fake();
+    $user = User::factory()->create();
+
+    $responses = [];
+    $threads = 3;
+
+    for ($i = 0; $i < $threads; $i++) {
+        $responses[] = $this->postJson('/api/auth/forgot-password', ['email' => $user->email]);
+    }
+
+    foreach ($responses as $response) {
+        $response->assertOk();
+        expect($response->json('message'))->toBe(__('Password reset code sent successfully'));
+    }
+
+    $user->refresh();
+
+    expect($user->password_reset_otp)->not()->toBeNull();
+    expect($user->password_reset_otp_expires_at)->not()->toBeNull();
+    expect(mb_strlen($user->password_reset_otp))->toBe(6);
+
+    Notification::assertSentTo($user, ResetPasswordNotification::class, $threads);
+
+    $response = $this->postJson('/api/auth/reset-password', [
+        'email' => $user->email,
+        'otp' => $user->password_reset_otp,
+        'password' => 'new-password-123',
+        'password_confirmation' => 'new-password-123',
+    ]);
+
+    $response->assertOk();
+    expect($response->json('message'))->toBe(__('Password reset successfully'));
+    expect(Hash::check('new-password-123', $user->fresh()->password))->toBeTrue();
+});

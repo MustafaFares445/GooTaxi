@@ -259,7 +259,7 @@ final readonly class CalculateBookingPriceAction
             return 0;
         }
 
-        $offer = $this->findValidOffer($offerId, $data);
+        $offer = $this->findValidOffer($offerId);
 
         return (float) ($offer?->discount_rate ?? 0);
     }
@@ -267,15 +267,14 @@ final readonly class CalculateBookingPriceAction
     /**
      * Find a valid, active offer by ID.
      */
-    private function findValidOffer(int $offerId, BookingData $data): ?Offer
+    private function findValidOffer(int $offerId): ?Offer
     {
-        $bookingDateTime = $this->getBookingDateTime($data);
-
         return Offer::query()
             ->where('id', $offerId)
             ->where('status', OfferStatus::Active)
-            ->whereDate('start_date', '<=', $bookingDateTime)
-            ->whereDate('end_date', '>=', $bookingDateTime)
+            ->whereColumn('uses', '<', 'number_of_times_used')
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
             ->first();
     }
 }

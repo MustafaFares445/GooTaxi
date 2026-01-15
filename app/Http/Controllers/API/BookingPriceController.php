@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Actions\CalculateBookingPriceAction;
+use App\Actions\GetOfferFromCouponCode;
 use App\Data\BookingData;
 use App\Enums\ResponseMessages;
 use App\Http\Requests\BookingPriceRequest;
 use App\Http\Resources\BookingPriceResource;
-use App\Models\Offer;
-use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 final readonly class BookingPriceController
 {
-    public function __construct(private CalculateBookingPriceAction $calculateBookingPriceAction) {}
+    public function __construct(
+        private CalculateBookingPriceAction $calculateBookingPriceAction,
+        private GetOfferFromCouponCode $getOfferFromCouponCode
+    ) {}
 
     /**
      * Calculate booking price
@@ -34,13 +36,12 @@ final readonly class BookingPriceController
     public function __invoke(BookingPriceRequest $request)
     {
         $validated = $request->validated();
-        $bookingDateTime = Carbon::parse($validated['date'].' '.$validated['time']);
 
-        $offerId = Offer::query()
-            ->where('coupon_code', $request->validated('couponCode'))
-            ->where('start_date', '<=', $bookingDateTime)
-            ->where('end_date', '>=', $bookingDateTime)
-            ->first()?->value('id');
+        $offerId = $this->getOfferFromCouponCode->handle(
+            $request->validated('couponCode'),
+            null,
+            false
+        );
 
         $data = $this->calculateBookingPriceAction->handle(
             BookingData::from(

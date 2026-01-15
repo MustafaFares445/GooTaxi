@@ -46,6 +46,8 @@ it('calculates booking price with valid offer coupon code', function () {
         'status' => OfferStatus::Active,
         'start_date' => now()->yesterday(),
         'end_date' => now()->tomorrow(),
+        'uses' => 0,
+        'number_of_times_used' => 10,
     ]);
 
     $date = now()->format('Y-m-d');
