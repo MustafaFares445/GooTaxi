@@ -14,7 +14,8 @@ final class ResetPasswordData extends Data
     public function __construct(
         #[Email, Max(191)]
         public string $email,
-        public string $token,
+        #[Min(6), Max(6)]
+        public string $otp,
         #[Min(8), Max(191)]
         public string $password,
     ) {}

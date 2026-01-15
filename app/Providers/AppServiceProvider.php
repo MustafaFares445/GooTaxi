@@ -60,6 +60,18 @@ final class AppServiceProvider extends ServiceProvider
 
             return true;
         });
+
+        Gate::define('reset-password', static function (User $user, string $otp): bool {
+            if (! $user->password_reset_otp || $user->password_reset_otp !== $otp) {
+                throw new AuthorizationException(__('Invalid reset code'));
+            }
+
+            if ($user->password_reset_otp_expires_at && $user->password_reset_otp_expires_at->isPast()) {
+                throw new AuthorizationException(__('Reset code has expired'));
+            }
+
+            return true;
+        });
     }
 
     private function bootModelsDefaults(): void

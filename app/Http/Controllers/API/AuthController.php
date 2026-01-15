@@ -68,10 +68,10 @@ final class AuthController
     }
 
     /**
-     * Request password reset link
+     * Request password reset code
      *
-     * This endpoint sends a password reset link to the user's email address.
-     * The reset link can be used to reset the user's password.
+     * This endpoint sends a password reset OTP code to the user's email address.
+     * The reset code can be used to reset the user's password.
      *
      * @operation forgotPassword
      *
@@ -89,14 +89,15 @@ final class AuthController
     /**
      * Reset user password
      *
-     * This endpoint allows a user to reset their password using a valid reset token
+     * This endpoint allows a user to reset their password using a valid reset OTP code
      * that was sent to their email address via the forgot password endpoint.
      *
      * @operation resetPassword
      *
      * @tags API
      *
-     * @throws ValidationException 422 Invalid token, email, or password validation failed
+     * @throws AuthorizationException 403 Invalid reset code or reset code has expired
+     * @throws ValidationException 422 Invalid email, OTP format, or password validation failed
      */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {

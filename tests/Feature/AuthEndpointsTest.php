@@ -5,11 +5,11 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Password;
 
 it('logs in and returns an access token', function () {
     $user = User::factory()->create(['password' => Hash::make('secret123')]);
@@ -56,31 +56,45 @@ it('logs out the current token', function () {
     $this->assertDatabaseMissing('personal_access_tokens', ['id' => $token->accessToken->id]);
 });
 
-it('sends a password reset link', function () {
+it('sends a password reset code', function () {
     Notification::fake();
     $user = User::factory()->create();
 
     $response = $this->postJson('/api/auth/forgot-password', ['email' => $user->email]);
 
     $response->assertOk();
-    expect($response->json('message'))->not()->toBeEmpty();
+    expect($response->json('message'))->toBe(__('Password reset code sent successfully'));
+
+    $user->refresh();
+    expect($user->password_reset_otp)->not()->toBeNull();
+    expect($user->password_reset_otp_expires_at)->not()->toBeNull();
+    expect(mb_strlen($user->password_reset_otp))->toBe(6);
     Notification::assertSentTo($user, ResetPasswordNotification::class);
 });
 
-it('resets a password with a valid token', function () {
-    $user = User::factory()->create([]);
-    $token = Password::createToken($user);
+it('resets a password with a valid OTP', function () {
+    Event::fake();
+    $user = User::factory()->create([
+        'password_reset_otp' => '123456',
+        'password_reset_otp_expires_at' => Carbon::now()->addMinutes(15),
+    ]);
 
     $response = $this->postJson('/api/auth/reset-password', [
         'email' => $user->email,
-        'token' => $token,
+        'otp' => '123456',
         'password' => 'new-password-123',
         'password_confirmation' => 'new-password-123',
     ]);
 
     $response->assertOk();
-    expect($response->json('message'))->not()->toBeEmpty();
+    expect($response->json('message'))->toBe(__('Password reset successfully'));
     expect(Hash::check('new-password-123', $user->fresh()->password))->toBeTrue();
+
+    $user->refresh();
+    expect($user->password_reset_otp)->toBeNull();
+    expect($user->password_reset_otp_expires_at)->toBeNull();
+
+    Event::assertDispatched(PasswordReset::class);
 });
 
 it('registers a new user and generates an OTP', function () {
@@ -178,7 +192,8 @@ it('returns success when verifying an already verified email', function () {
     ]);
 
     $response->assertOk();
-    expect($response->json('message'))->toBe(__('Email already verified'));
+    expect($response->json('message'))->toBe(__('Email verified successfully'));
+    expect($response->json('data.token'))->not()->toBeNull();
 });
 
 it('resends verification code', function () {
@@ -240,6 +255,78 @@ it('validates OTP format when verifying', function () {
 it('validates email exists when resending verification', function () {
     $response = $this->postJson('/api/auth/resend-verification', [
         'email' => 'nonexistent@example.com',
+    ]);
+
+    $response->assertUnprocessable();
+});
+
+it('fails to reset password with an invalid OTP', function () {
+    $user = User::factory()->create([
+        'password_reset_otp' => '123456',
+        'password_reset_otp_expires_at' => Carbon::now()->addMinutes(15),
+    ]);
+
+    $response = $this->postJson('/api/auth/reset-password', [
+        'email' => $user->email,
+        'otp' => '000000',
+        'password' => 'new-password-123',
+        'password_confirmation' => 'new-password-123',
+    ]);
+
+    $response->assertForbidden();
+    expect($response->json('message'))->toBe(__('Invalid reset code'));
+
+    $user->refresh();
+    expect(Hash::check('new-password-123', $user->password))->toBeFalse();
+});
+
+it('fails to reset password with an expired OTP', function () {
+    $user = User::factory()->create([
+        'password_reset_otp' => '123456',
+        'password_reset_otp_expires_at' => Carbon::now()->subMinutes(1),
+    ]);
+
+    $response = $this->postJson('/api/auth/reset-password', [
+        'email' => $user->email,
+        'otp' => '123456',
+        'password' => 'new-password-123',
+        'password_confirmation' => 'new-password-123',
+    ]);
+
+    $response->assertForbidden();
+    expect($response->json('message'))->toBe(__('Reset code has expired'));
+
+    $user->refresh();
+    expect(Hash::check('new-password-123', $user->password))->toBeFalse();
+});
+
+it('validates email exists when requesting password reset', function () {
+    $response = $this->postJson('/api/auth/forgot-password', [
+        'email' => 'nonexistent@example.com',
+    ]);
+
+    $response->assertUnprocessable();
+});
+
+it('validates OTP format when resetting password', function () {
+    $user = User::factory()->create();
+
+    $response = $this->postJson('/api/auth/reset-password', [
+        'email' => $user->email,
+        'otp' => '12345',
+        'password' => 'new-password-123',
+        'password_confirmation' => 'new-password-123',
+    ]);
+
+    $response->assertUnprocessable();
+});
+
+it('validates email exists when resetting password', function () {
+    $response = $this->postJson('/api/auth/reset-password', [
+        'email' => 'nonexistent@example.com',
+        'otp' => '123456',
+        'password' => 'new-password-123',
+        'password_confirmation' => 'new-password-123',
     ]);
 
     $response->assertUnprocessable();

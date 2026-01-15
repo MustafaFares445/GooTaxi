@@ -14,7 +14,6 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 use Random\RandomException;
@@ -44,32 +43,47 @@ final class AuthService
 
     /**
      * @return array{httpStatus: int, status: string}
+     *
+     * @throws RandomException
      */
     public function sendResetLink(string $email): array
     {
-        $status = Password::sendResetLink(['email' => $email]);
+        $user = User::query()->where('email', $email)->firstOrFail();
 
-        return $this->passwordActionResponse($status, Password::RESET_LINK_SENT);
+        $otp = $this->generateOtp();
+
+        $user->update([
+            'password_reset_otp' => $otp,
+            'password_reset_otp_expires_at' => Carbon::now()->addMinutes(15),
+        ]);
+
+        $user->sendPasswordResetNotification();
+
+        return [
+            'httpStatus' => ResponseAlias::HTTP_OK,
+            'status' => __('Password reset code sent successfully'),
+        ];
     }
 
     public function resetPassword(ResetPasswordData $data): array
     {
-        $status = Password::reset([
-            'email' => $data->email,
-            'token' => $data->token,
-            'password' => $data->password,
-        ],
-            static function (User $user, string $password): void {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        $user = User::query()->where('email', $data->email)->firstOrFail();
 
-                event(new PasswordReset($user));
-            }
-        );
+        Gate::forUser($user)->authorize('reset-password', [$data->otp]);
 
-        return $this->passwordActionResponse($status, Password::PASSWORD_RESET);
+        $user->forceFill([
+            'password' => Hash::make($data->password),
+            'remember_token' => Str::random(60),
+            'password_reset_otp' => null,
+            'password_reset_otp_expires_at' => null,
+        ])->save();
+
+        event(new PasswordReset($user));
+
+        return [
+            'httpStatus' => ResponseAlias::HTTP_OK,
+            'status' => __('Password reset successfully'),
+        ];
     }
 
     /**
@@ -163,20 +177,5 @@ final class AuthService
     private function generateOtp(): string
     {
         return mb_str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-    }
-
-    /**
-     * @return array{httpStatus: int, status: string}
-     */
-    private function passwordActionResponse(string $status, string $successStatus): array
-    {
-        $httpStatus = $status === $successStatus
-            ? ResponseAlias::HTTP_OK
-            : ResponseAlias::HTTP_UNPROCESSABLE_ENTITY;
-
-        return [
-            'httpStatus' => $httpStatus,
-            'status' => $status,
-        ];
     }
 }

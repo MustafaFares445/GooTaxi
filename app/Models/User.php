@@ -27,6 +27,8 @@ use Spatie\MediaLibrary\HasMedia;
  * @property-read CarbonInterface|null $email_verified_at
  * @property string|null $email_verification_otp
  * @property CarbonInterface|null $email_verification_otp_expires_at
+ * @property string|null $password_reset_otp
+ * @property CarbonInterface|null $password_reset_otp_expires_at
  * @property-read string $password
  * @property-read string|null $remember_token
  * @property-read CarbonInterface $created_at
@@ -45,6 +47,8 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'email_verified_at',
         'email_verification_otp',
         'email_verification_otp_expires_at',
+        'password_reset_otp',
+        'password_reset_otp_expires_at',
         'password',
     ];
 
@@ -70,6 +74,8 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'email_verified_at' => 'datetime',
             'email_verification_otp' => 'string',
             'email_verification_otp_expires_at' => 'datetime',
+            'password_reset_otp' => 'string',
+            'password_reset_otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'remember_token' => 'string',
             'created_at' => 'datetime',
@@ -87,8 +93,8 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $this->notify(new VerifyEmailNotification);
     }
 
-    public function sendPasswordResetNotification($token): void
+    public function sendPasswordResetNotification($token = null): void
     {
-        $this->notify(new ResetPasswordNotification($token));
+        $this->notify(new ResetPasswordNotification);
     }
 }
