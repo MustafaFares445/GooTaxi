@@ -18,15 +18,15 @@ final class AdditionalPriceData extends Data
 
     public function __construct(
         #[Numeric]
-        public ?int $startPrice = null,
+        public ?float $startPrice = null,
         #[Numeric]
-        public ?int $priceOfGoingPerKm = null,
+        public ?float $priceOfGoingPerKm = null,
         #[Numeric]
-        public ?int $returnPricePerKm = null,
+        public ?float $returnPricePerKm = null,
         #[Numeric]
-        public ?int $latitude = null,
+        public ?float $latitude = null,
         #[Numeric]
-        public ?int $longitude = null,
+        public ?float $longitude = null,
         public ?string $address = null
     ) {}
 }
