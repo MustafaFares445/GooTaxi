@@ -178,12 +178,13 @@ final readonly class CalculateBookingPriceAction
     {
         $bookingDateTime = $this->getBookingDateTime($data);
         $currentDay = $bookingDateTime->format('D');
-        $currentTime = $bookingDateTime->format('H:i:s');
 
         return TimeRange::query()
+            ->whereNotNull('days')
+            ->whereRaw('JSON_VALID(days)')
             ->whereJsonContains('days', $currentDay)
-            ->where('from_time', '<=', $currentTime)
-            ->where('to_time', '>=', $currentTime)
+            ->whereTime('from_time', '<=', $bookingDateTime)
+            ->whereTime('to_time', '>=', $bookingDateTime)
             ->first();
     }
 
