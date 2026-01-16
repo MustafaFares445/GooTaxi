@@ -31,10 +31,7 @@ final class ResetPasswordNotification extends Notification
 
         return (new MailMessage)
             ->subject(__('Reset Password Notification'))
-            ->line(__('Please use the following code to reset your password:'))
-            ->line($otp)
-            ->line(__('This code will expire in 15 minutes.'))
-            ->line(__('If you did not request a password reset, no further action is required.'));
+            ->view('emails.reset-password', ['otp' => $otp]);
     }
 
     /**

@@ -31,10 +31,7 @@ final class VerifyEmailNotification extends Notification
 
         return (new MailMessage)
             ->subject(__('Verify Email Address'))
-            ->line(__('Please use the following code to verify your email address:'))
-            ->line($otp)
-            ->line(__('This code will expire in 15 minutes.'))
-            ->line(__('If you did not create an account, no further action is required.'));
+            ->view('emails.verify-email', ['otp' => $otp]);
     }
 
     /**
