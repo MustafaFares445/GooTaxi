@@ -15,7 +15,7 @@ final class StatsAction
     {
         $totalBookings = Booking::query()->count();
 
-        $totalCustomers = User::query()->count();
+        $totalCustomers = User::query()->where('is_admin' , false)->count();
 
         $totalRevenue = (float) Booking::query()->sum('final_price');
 
