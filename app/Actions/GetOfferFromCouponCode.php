@@ -9,11 +9,11 @@ use App\Models\Offer;
 
 final class GetOfferFromCouponCode
 {
-    public function handle(?string $couponsCode = null, ?int $offerId = null, bool $changeStatus = true): ?int
+    public function handle(?string $couponCode = null, ?int $offerId = null, bool $changeStatus = true): ?int
     {
-        if ($couponsCode) {
+        if ($couponCode) {
             $offer = Offer::query()
-                ->where('coupon_code', $couponsCode)
+                ->where('coupon_code', $couponCode)
                 ->where('status', OfferStatus::Active)
                 ->whereColumn('uses', '<', 'number_of_times_used')
                 ->whereDate('start_date', '<=', now())

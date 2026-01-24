@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\AdditionalPriceData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\AdditionalPriceFilterRequest;
 use App\Http\Requests\AdditionalPriceStoreRequest;
 use App\Http\Requests\AdditionalPriceUpdateRequest;
@@ -13,7 +14,7 @@ use App\Models\AdditionalPrice;
 use App\Services\AdditionalPriceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -73,11 +74,10 @@ final readonly class AdditionalPriceController
     /**
      * @tags Dashboard
      */
-    public function destroy(AdditionalPrice $additionalPrice): AdditionalPriceResource
+    public function destroy(AdditionalPrice $additionalPrice): HttpResponse
     {
         $additionalPrice->delete();
 
-        return AdditionalPriceResource::make($additionalPrice)
-            ->additional(['message' => ResponseMessages::DELETED->message()]);
+        return response()->noContent();
     }
 }

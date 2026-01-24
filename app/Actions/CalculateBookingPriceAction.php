@@ -177,7 +177,7 @@ final readonly class CalculateBookingPriceAction
     private function findActiveTimeRange(BookingData $data): ?TimeRange
     {
         $bookingDateTime = $this->getBookingDateTime($data);
-        $currentDay = strtolower($bookingDateTime->format('D'));
+        $currentDay = $bookingDateTime->format('D');
 
         return TimeRange::query()
             ->whereNotNull('days')

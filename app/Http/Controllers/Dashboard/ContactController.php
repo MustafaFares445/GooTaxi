@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\ContactData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\ContactRequest;
 use App\Http\Resources\ContactResource;
 use App\Models\Contact;
 use App\Services\ContactService;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
 final readonly class ContactController
 {
@@ -39,6 +39,6 @@ final readonly class ContactController
         $updatedContact = $this->contactService->update(ContactData::from($request->validated()), $contact);
 
         return ContactResource::make($updatedContact)
-            ->additional(['message' => __(ResponseMessages::RETRIEVED->message())]);
+            ->additional(['message' => __(ResponseMessages::UPDATED->message())]);
     }
 }

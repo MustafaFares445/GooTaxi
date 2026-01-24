@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\BookingData;
-use App\Enums\BookingStatus;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\BookingFilterRequest;
 use App\Http\Requests\BookingStoreRequest;
 use App\Http\Requests\BookingUpdateRequest;
@@ -14,7 +14,7 @@ use App\Models\Booking;
 use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -75,11 +75,10 @@ final readonly class BookingController
     /**
      * @tags Dashboard
      */
-    public function destroy(Booking $booking): BookingResource
+    public function destroy(Booking $booking): HttpResponse
     {
         $booking->delete();
 
-        return BookingResource::make($booking)
-            ->additional(['message' => ResponseMessages::DELETED->message()]);
+        return response()->noContent();
     }
 }

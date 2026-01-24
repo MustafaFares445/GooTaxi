@@ -6,20 +6,20 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class ContactRequest extends FormRequest
+final class CheckOfferRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
-            'phone' => ['nullable', 'string'],
-            'whatsapp' => ['nullable', 'string'],
-            'email' => ['nullable', 'email', 'max:254'],
-            'address' => ['nullable', 'string'],
+            'couponCode' => ['required', 'string', 'min:1', 'max:100'],
         ];
     }
 }

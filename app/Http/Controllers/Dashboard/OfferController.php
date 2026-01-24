@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\OfferData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\OfferFilterRequest;
 use App\Http\Requests\OfferStoreRequest;
 use App\Http\Requests\OfferUpdateRequest;
@@ -13,7 +14,7 @@ use App\Models\Offer;
 use App\Services\OfferService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -74,11 +75,10 @@ final class OfferController
     /**
      * @tags Dashboard
      */
-    public function destroy(Offer $offer): OfferResource
+    public function destroy(Offer $offer): HttpResponse
     {
         $offer->delete();
 
-        return OfferResource::make($offer)
-            ->additional(['message' => ResponseMessages::DELETED->message()]);
+        return response()->noContent();
     }
 }

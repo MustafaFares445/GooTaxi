@@ -1,6 +1,136 @@
+# Goo-Taxi
+
+A comprehensive taxi booking management system built with Laravel 12, designed to handle complex pricing calculations, driver management, and booking operations with a focus on type safety and code quality.
+
+## Project Purpose
+
+Goo-Taxi is a taxi booking platform that enables users to book taxi rides with sophisticated pricing mechanisms. The system handles:
+
+- **Booking Management**: Users can create, view, and update taxi bookings with detailed location and passenger information
+- **Dynamic Pricing**: Complex price calculation system that considers:
+  - Base distance-based pricing
+  - Time-based adjustments (peak hours, special time ranges)
+  - Location-based pricing (nearest pricing zones)
+  - Van surcharges for extra large bags
+  - Promotional offers and coupon codes
+- **Driver Management**: Assign and manage drivers for bookings
+- **Offer System**: Create and manage promotional offers with coupon codes, discount rates, and usage limits
+- **User Authentication**: Complete authentication system with email verification and password reset via OTP
+- **Contact & Feedback**: System for users to submit inquiries and feedback
+
+The application provides both public API endpoints for mobile/web clients and a dashboard interface for administrative management.
+
+## Architectural Flow
+
+The application follows a layered architecture pattern with clear separation of concerns:
+
+### Request Flow Pattern
+
+```
+Route → Controller → FormRequest (Validation) → Service/Action → Data DTO → Resource → Response
+```
+
+### Key Components
+
+#### 1. **Routes** (`routes/api.php`, `routes/dashboard.php`)
+- Define API endpoints and middleware
+- API routes: Public and authenticated user endpoints
+- Dashboard routes: Admin-only endpoints with `auth:sanctum` and `admin-only` middleware
+
+#### 2. **Controllers** (`app/Http/Controllers/`)
+- **API Controllers** (`API/`): Handle public-facing API requests
+- **Dashboard Controllers** (`Dashboard/`): Handle admin management operations
+- Single-action controllers use `__invoke()` method
+- Multi-action controllers follow RESTful conventions
+- Controllers are thin - they delegate business logic to Services and Actions
+
+#### 3. **Form Requests** (`app/Http/Requests/`)
+- Handle validation logic
+- Naming patterns:
+  - `{Model}StoreRequest` - Create operations
+  - `{Model}UpdateRequest` - Update operations
+  - `{Model}FilterRequest` - Filtering/index operations
+  - `User{Model}Request` - User-specific requests
+- Properties use camelCase convention
+
+#### 4. **Services** (`app/Services/`)
+- Handle business logic for CRUD operations
+- Use database transactions for data integrity
+- Accept Data DTOs instead of raw arrays
+- Examples: `BookingService`, `UserService`, `DriverService`
+
+#### 5. **Actions** (`app/Actions/`)
+- Single-purpose, reusable business logic operations
+- Verb-based naming: `CalculateBookingPriceAction`, `ReturnNearestAdditionalPriceAction`, `GetOfferFromCouponCode`
+- Used for complex operations that don't fit into service methods
+- Can be injected into Services or Controllers
+
+#### 6. **Data Transfer Objects (DTOs)** (`app/Data/`)
+- Spatie Laravel Data classes for type-safe data handling
+- Naming: `{Model}Data.php`
+- Subdirectories for grouped DTOs: `app/Data/Auth/` (LoginData, RegisterData, etc.)
+- Include `HasModelAttributes` trait for model attribute mapping
+- Properties in camelCase
+
+#### 7. **API Resources** (`app/Http/Resources/`)
+- Format API responses consistently
+- Naming: `{Model}Resource.php`, `{Model}SummaryResource.php`
+- Properties in camelCase
+- Handle media collections automatically
+
+#### 8. **Models** (`app/Models/`)
+- Eloquent models with strict typing
+- Related files:
+  - **Factories**: `database/factories/{Model}Factory.php`
+  - **Policies**: `app/Policies/{Model}Policy.php`
+  - **Filter Traits**: `app/Traits/FilterQueries/{Model}FilterQuery.php`
+- Use PHP 8 constructor property promotion
+- Casts defined in `casts()` method
+
+#### 9. **Enums** (`app/Enums/`)
+- Type-safe enumerations for status values
+- Examples: `BookingStatus`, `OfferStatus`, `ResponseMessages`
+- TitleCase naming convention
+
+### Example: Booking Price Calculation Flow
+
+1. **Route**: `POST /api/booking/price` → `BookingPriceController`
+2. **Controller**: Validates request using `BookingPriceRequest`
+3. **Action**: Calls `CalculateBookingPriceAction` which:
+   - Retrieves base price configuration
+   - Calculates base distance price
+   - Applies van surcharge if needed
+   - Gets time-based or location-based adjustments
+   - Applies offer discount if valid
+   - Returns `BookingPriceData` DTO
+4. **Resource**: Formats `BookingPriceData` into `BookingPriceResource`
+5. **Response**: Returns JSON response with price breakdown
+
+### Database Layer
+
+- Uses Eloquent ORM exclusively (no raw queries)
+- Relationships defined with proper type hints
+- Eager loading to prevent N+1 queries
+- Database transactions in Services for data integrity
+
+### Authentication & Authorization
+
+- **Sanctum**: API token authentication
+- **Policies**: Authorization logic per model
+- **Middleware**: Route-level access control (`auth:sanctum`, `admin-only`)
+
+### Testing
+
+- **Pest**: Testing framework (v4)
+- **Feature Tests**: `tests/Feature/` - Test HTTP endpoints
+- **Unit Tests**: `tests/Unit/` - Test Services, Actions, Models
+- **Factories**: Used for test data generation
+
+---
+
 ## Laravel Starter Kit
 
-is an ultra-strict, type-safe [Laravel](https://laravel.com) skeleton engineered for developers who refuse to compromise on code quality. This opinionated starter kit enforces rigorous development standards through meticulous tooling configuration and architectural decisions that prioritize type safety, immutability, and fail-fast principles.
+This project is built on an ultra-strict, type-safe [Laravel](https://laravel.com) skeleton engineered for developers who refuse to compromise on code quality. This opinionated starter kit enforces rigorous development standards through meticulous tooling configuration and architectural decisions that prioritize type safety, immutability, and fail-fast principles.
 
 ## Why This Starter Kit?
 

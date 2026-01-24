@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Data\BookingData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\BookingFilterRequest;
 use App\Http\Requests\UserBookingRequest;
 use App\Http\Requests\UserBookingUpdateRequest;
@@ -14,7 +15,6 @@ use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\ValidationException;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 

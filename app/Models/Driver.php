@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 final class Driver extends Model
 {
     /** @use HasFactory<DriverFactory> */
-    use DriverFilterQuery, HasFactory, HasFactory;
+    use DriverFilterQuery, HasFactory;
 
     protected $fillable = [
         'name',

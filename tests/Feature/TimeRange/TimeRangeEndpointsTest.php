@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Enums\ResponseMessages;
 use App\Models\TimeRange;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
 beforeEach(function () {
     $user = User::factory()->create(['is_admin' => true]);
@@ -50,8 +50,7 @@ it('creates, shows, updates and deletes a timeRange', function () {
         ->assertJsonPath('message', ResponseMessages::UPDATED->message());
 
     $delete = $this->deleteJson("/api/dashboard/time_ranges/{$id}");
-    $delete->assertOk()
-        ->assertJsonPath('message', ResponseMessages::DELETED->message());
+    $delete->assertNoContent();
 
     $this->assertDatabaseMissing('time_ranges', ['id' => $id]);
 });

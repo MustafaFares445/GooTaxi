@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\TimeRangeData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\TimeRangeStoreRequest;
 use App\Http\Requests\TimeRangeUpdateRequest;
 use App\Http\Resources\TimeRangeResource;
@@ -12,7 +13,7 @@ use App\Models\TimeRange;
 use App\Services\TimeRangeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -71,11 +72,10 @@ final readonly class TimeRangeController
     /**
      * @tags Dashboard
      */
-    public function destroy(TimeRange $timeRange): TimeRangeResource
+    public function destroy(TimeRange $timeRange): HttpResponse
     {
         $timeRange->delete();
 
-        return TimeRangeResource::make($timeRange)
-            ->additional(['message' => ResponseMessages::DELETED->message()]);
+        return response()->noContent();
     }
 }

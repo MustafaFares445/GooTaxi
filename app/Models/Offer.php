@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 final class Offer extends Model
 {
     /** @use HasFactory<OfferFactory> */
-    use HasFactory, HasFactory, OfferFilterQuery;
+    use HasFactory, OfferFilterQuery;
 
     protected $fillable = [
         'coupon_code',

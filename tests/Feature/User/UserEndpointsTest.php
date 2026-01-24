@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Enums\ResponseMessages;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
 beforeEach(function () {
     $user = User::factory()->create(['is_admin' => true]);
@@ -55,8 +55,7 @@ it('creates, shows, updates and deletes a user', function () {
         ->assertJsonPath('message', ResponseMessages::UPDATED->message());
 
     $delete = $this->deleteJson("/api/dashboard/users/{$id}");
-    $delete->assertOk()
-        ->assertJsonPath('message', ResponseMessages::DELETED->message());
+    $delete->assertNoContent();
 
     $this->assertDatabaseMissing('users', ['id' => $id]);
 });

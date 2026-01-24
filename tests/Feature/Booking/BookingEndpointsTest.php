@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use App\Enums\BookingStatus;
+use App\Enums\ResponseMessages;
 use App\Models\BasePrice;
 use App\Models\Booking;
 use App\Models\Driver;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
 beforeEach(function () {
     $user = User::factory()->create(['is_admin' => true]);

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Enums\ResponseMessages;
 use App\Models\Driver;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 
 beforeEach(function () {
     $user = User::factory()->create(['is_admin' => true]);
@@ -44,8 +44,7 @@ it('creates, shows, updates and deletes a driver', function () {
         ->assertJsonPath('message', ResponseMessages::UPDATED->message());
 
     $delete = $this->deleteJson("/api/dashboard/drivers/{$id}");
-    $delete->assertOk()
-        ->assertJsonPath('message', ResponseMessages::DELETED->message());
+    $delete->assertNoContent();
 
     $this->assertDatabaseMissing('drivers', ['id' => $id]);
 });

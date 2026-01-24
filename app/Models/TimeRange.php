@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 final class TimeRange extends Model
 {
     /** @use HasFactory<TimeRangeFactory> */
-    use HasFactory, HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'days',

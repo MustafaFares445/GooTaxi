@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\DriverData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\DriverFilterRequest;
 use App\Http\Requests\DriverStoreRequest;
 use App\Http\Requests\DriverUpdateRequest;
@@ -14,7 +15,7 @@ use App\Models\Driver;
 use App\Services\DriverService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -95,11 +96,10 @@ final class DriverController
     /**
      * @tags Dashboard
      */
-    public function destroy(Driver $driver): DriverResource
+    public function destroy(Driver $driver): HttpResponse
     {
         $driver->delete();
 
-        return DriverResource::make($driver)
-            ->additional(['message' => ResponseMessages::DELETED->message()]);
+        return response()->noContent();
     }
 }

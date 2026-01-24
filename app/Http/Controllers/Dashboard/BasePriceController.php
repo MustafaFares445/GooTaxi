@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Dashboard;
 
 use App\Data\BasePriceData;
+use App\Enums\ResponseMessages;
 use App\Http\Requests\BasePriceUpdateRequest;
 use App\Http\Resources\BasePriceResource;
 use App\Models\BasePrice;
 use App\Services\BasePriceService;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 use Throwable;
 
 final readonly class BasePriceController

@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Dashboard;
 
-use Throwable;
-use App\Models\User;
 use App\Data\UserData;
+use App\Enums\ResponseMessages;
+use App\Http\Requests\UserFilterRequest;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\UserSummaryResource;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use App\Http\Resources\UserResource;
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserFilterRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Resources\UserSummaryResource;
-use Symfony\Component\HttpFoundation\Response;
-use Mrmarchone\LaravelAutoCrud\Enums\ResponseMessages;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response as HttpResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final readonly class UserController
 {
@@ -40,7 +41,7 @@ final readonly class UserController
     public function summary(UserFilterRequest $request): AnonymousResourceCollection
     {
         $users = User::getQuery()
-            ->select(['id' , 'name'])
+            ->select(['id', 'name'])
             ->get();
 
         return UserSummaryResource::collection($users)
@@ -87,11 +88,10 @@ final readonly class UserController
     /**
      * @tags Dashboard
      */
-    public function destroy(User $user): UserResource
+    public function destroy(User $user): HttpResponse
     {
         $user->delete();
 
-        return UserResource::make($user)
-            ->additional(['message' => ResponseMessages::DELETED->message()]);
+        return response()->noContent();
     }
 }

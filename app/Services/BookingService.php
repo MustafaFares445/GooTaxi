@@ -20,10 +20,10 @@ final class BookingService
      *
      * @throws Throwable
      */
-    public function store(BookingData $data, ?string $couponsCode = null): Booking
+    public function store(BookingData $data, ?string $couponCode = null): Booking
     {
-        return DB::transaction(function () use ($data, $couponsCode) {
-            $data->offerId = app(GetOfferFromCouponCode::class)->handle($couponsCode, $data->offerId);
+        return DB::transaction(function () use ($data, $couponCode) {
+            $data->offerId = app(GetOfferFromCouponCode::class)->handle($couponCode, $data->offerId);
 
             $data->finalPrice = $this->calculateFinalPrice($data);
 

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class ContactFactory extends Factory
+final class ContactFactory extends Factory
 {
     protected $model = Contact::class;
 
@@ -16,7 +18,7 @@ class ContactFactory extends Factory
             'phone' => $this->faker->phoneNumber(),
             'whatsapp' => $this->faker->word(),
             'email' => $this->faker->unique()->safeEmail(),
-            'adress' => $this->faker->word(),
+            'address' => $this->faker->word(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

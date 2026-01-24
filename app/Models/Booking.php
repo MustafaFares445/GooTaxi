@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 final class Booking extends Model
 {
     /** @use HasFactory<BookingFactory> */
-    use BookingFilterQuery, HasFactory, HasFactory;
+    use BookingFilterQuery, HasFactory;
 
     protected $fillable = [
         'user_id',
